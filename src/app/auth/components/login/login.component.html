@@ -1,0 +1,55 @@
+<div class="login-container">
+    <div class="login-card-wrapper">
+        <mat-card class="login-card">
+            <mat-card-header class="login-header">
+                <div mat-card-avatar class="login-avatar">
+                    <mat-icon>business</mat-icon>
+                </div>
+
+                <mat-card-title>Enterprise Project Management</mat-card-title>
+
+                <mat-card-subtitle>Sign in to your account</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content class="login-content">
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+                    <!-- Email Field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Email Address</mat-label>
+
+                        <input matInput formControlName="email" type="email" placeholder="Enter your email" autocomplete="email"
+                            [class.error]="hasError('email', 'required') || hasError('email', 'email')" />
+
+                        <mat-icon matSuffix>email</mat-icon>
+
+                        <mat-error *ngIf="getErrorMessage('email')">{{ getErrorMessage('email') }}</mat-error>
+                    </mat-form-field>
+
+                    <!-- Password Field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Password</mat-label>
+
+                        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'"
+                            placeholder="Enter your password" autocomplete="current-password"
+                            [class.error]="hasError('password', 'required') || hasError('password', 'minlength')" />
+
+                        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" 
+                            [attr.aria-pressed]="hidePassword" type="button">
+                            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+
+                        <mat-error *ngIf="getErrorMessage('password')">{{ getErrorMessage('password') }}</mat-error>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" type="submit" class="login-button" [disabled]="loading">
+                        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+
+                        <mat-icon *ngIf="!loading">login</mat-icon>
+
+                        <span class="button-text">{{ loading ? 'Signing In...' : 'Sign In' }}</span>
+                    </button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

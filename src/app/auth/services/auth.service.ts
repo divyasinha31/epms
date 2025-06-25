@@ -14,9 +14,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<User | null>(
-      storedUser ? JSON.parse(storedUser) : null
-    );
+    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser ? JSON.parse(storedUser) : null);
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -91,27 +89,5 @@ export class AuthService {
           return response;
         })
       );
-  }
-
-  // Mock login method for testing (will remove later)
-  mockLogin(email: string, role: UserRole): void {
-    const mockUser: User = {
-      id: '1',
-      email: email,
-      firstName: 'Test',
-      lastName: 'User',
-      role: role,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    const mockToken = 'mock-jwt-token-' + Date.now();
-    
-    localStorage.setItem('currentUser', JSON.stringify(mockUser));
-    localStorage.setItem(environment.tokenKey, mockToken);
-    localStorage.setItem(environment.refreshTokenKey, 'mock-refresh-token');
-    
-    this.currentUserSubject.next(mockUser);
   }
 }
