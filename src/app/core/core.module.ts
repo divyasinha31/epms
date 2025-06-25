@@ -1,12 +1,21 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ApiService } from './services/api.service';
+import { NotificationService } from './services/notification.service';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule,
+    MatSnackBarModule
   ],
-  providers: []
+  providers: [
+    ApiService,
+    NotificationService
+  ]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
