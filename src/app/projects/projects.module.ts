@@ -60,6 +60,9 @@ import { MatDividerModule } from '@angular/material/divider';
     MatChipsModule,
     MatCheckboxModule,
     MatDividerModule
+  ],
+  providers: [
+    ProjectService
   ]
 })
 export class ProjectsModule { }
