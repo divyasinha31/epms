@@ -1,3 +1,4 @@
 <div class="app-container">
-  <router-outlet></router-outlet>
+  <app-layout *ngIf="isLoggedIn"></app-layout>
+  <router-outlet *ngIf="!isLoggedIn"></router-outlet>
 </div>
