@@ -1,0 +1,251 @@
+<div class="project-detail-container" *ngIf="project">
+    <!-- Header -->
+    <div class="detail-header">
+        <div class="header-nav">
+            <button mat-icon-button (click)="goBack()" class="back-button">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+
+            <div class="header-content">
+                <h1>{{ project.name }}</h1>
+
+                <div class="header-meta">
+                    <span class="status-chip" [class]="'status-' + project.status">
+                        {{ getStatusDisplayName(project.status) }}
+                    </span>
+                    <span class="project-dates">
+                        {{ project.startDate | date:'MMM dd, yyyy' }} - {{ project.endDate | date:'MMM dd, yyyy' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button mat-stroked-button (click)="editProject()">
+                <mat-icon>edit</mat-icon>
+                Edit Project
+            </button>
+
+            <button mat-stroked-button (click)="assignUsers()">
+                <mat-icon>people</mat-icon>
+                Manage Team
+            </button>
+
+            <button mat-button [matMenuTriggerFor]="actionMenu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <!-- Project Overview -->
+    <div class="content-grid">
+        <!-- Project Information -->
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-card-title>Project Information</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="info-section">
+                    <h3>Description</h3>
+                    <p>{{ project.description }}</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Status</label>
+
+                        <span class="status-chip" [class]="'status-' + project.status">
+                            {{ getStatusDisplayName(project.status) }}
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Progress</label>
+
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" [style.width.%]="getProjectProgress()"></div>
+                            </div>
+
+                            <span class="progress-text">{{ getProjectProgress() }}%</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Start Date</label>
+                        <span>{{ project.startDate | date:'MMM dd, yyyy' }}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <label>End Date</label>
+                        <span>{{ project.endDate | date:'MMM dd, yyyy' }}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Duration</label>
+                        <span>{{ getProjectDuration() }} days</span>
+                    </div>
+
+                    <div class="info-item">
+                        <label>Created</label>
+                        <span>{{ project.createdAt | date:'MMM dd, yyyy' }}</span>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Team Members -->
+        <mat-card class="team-card">
+            <mat-card-header>
+                <mat-card-title>Team Members</mat-card-title>
+                <mat-card-subtitle>{{ project.teamMembers.length }} members assigned</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="team-list" *ngIf="teamMembers.length > 0; else noTeam">
+                    <div class="team-member" *ngFor="let member of teamMembers">
+                        <div class="member-avatar">
+                            {{ member.firstName.charAt(0) }}{{ member.lastName.charAt(0) }}
+                        </div>
+
+                        <div class="member-info">
+                            <div class="member-name">{{ member.firstName }} {{ member.lastName }}</div>
+                            <div class="member-role">{{ member.role | titlecase }}</div>
+                            <div class="member-email">{{ member.email }}</div>
+                        </div>
+
+                        <div class="member-actions">
+                            <button mat-icon-button [matMenuTriggerFor]="memberMenu" [matMenuTriggerData]="{member: member}">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <ng-template #noTeam>
+                    <div class="no-team">
+                        <mat-icon>people_outline</mat-icon>
+                        <p>No team members assigned</p>
+
+                        <button mat-stroked-button (click)="assignUsers()">
+                            Assign Team Members
+                        </button>
+                    </div>
+                </ng-template>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Recent Activity -->
+        <mat-card class="activity-card">
+            <mat-card-header>
+                <mat-card-title>Recent Activity</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="activity-list" *ngIf="recentActivities.length > 0; else noActivity">
+                    <div class="activity-item" *ngFor="let activity of recentActivities">
+                        <div class="activity-icon">
+                            <mat-icon>{{ activity.icon }}</mat-icon>
+                        </div>
+
+                        <div class="activity-content">
+                            <p class="activity-message">{{ activity.message }}</p>
+
+                            <div class="activity-meta">
+                                <span class="activity-user">{{ activity.user }}</span>
+                                <span class="activity-time">{{ activity.timestamp | date:'MMM dd, HH:mm' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <ng-template #noActivity>
+                    <div class="no-activity">
+                        <mat-icon>timeline</mat-icon>
+                        <p>No recent activity</p>
+                    </div>
+                </ng-template>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Project Statistics -->
+        <mat-card class="stats-card">
+            <mat-card-header>
+                <mat-card-title>Project Statistics</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Total Tasks</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">In Progress</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Overdue</div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading project...</p>
+</div>
+
+<!-- Action Menu -->
+<mat-menu #actionMenu="matMenu">
+    <button mat-menu-item (click)="duplicateProject()">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate Project
+    </button>
+
+    <button mat-menu-item (click)="exportProject()">
+        <mat-icon>download</mat-icon>
+        Export Project
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="deleteProject()" class="delete-action">
+        <mat-icon>delete</mat-icon>
+        Delete Project
+    </button>
+</mat-menu>
+
+<!-- Member Menu -->
+<mat-menu #memberMenu="matMenu">
+    <ng-template matMenuContent let-member="member">
+        <button mat-menu-item>
+            <mat-icon>email</mat-icon>
+            Contact {{ member.firstName }}
+        </button>
+
+        <button mat-menu-item>
+            <mat-icon>assignment</mat-icon>
+            View Tasks
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item (click)="removeMember(member.id)" class="delete-action">
+            <mat-icon>person_remove</mat-icon>
+            Remove from Project
+        </button>
+    </ng-template>
+</mat-menu>
