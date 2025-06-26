@@ -95,6 +95,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/projects']);
   }
 
+  viewTasks(): void {
+    this.router.navigate(['/projects', this.project?.id, 'tasks']);
+  }
+
   editProject(): void {
     this.router.navigate(['/projects', this.project?.id, 'edit']);
   }

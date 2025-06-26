@@ -31,6 +31,21 @@
                 Manage Team
             </button>
 
+            <button mat-stroked-button (click)="viewTasks()">
+                <mat-icon>assignment</mat-icon>
+                View Tasks
+            </button>
+
+            <button mat-stroked-button (click)="editProject()">
+                <mat-icon>edit</mat-icon>
+                Edit Project
+            </button>
+
+            <button mat-stroked-button (click)="assignUsers()">
+                <mat-icon>people</mat-icon>
+                Manage Team
+            </button>
+
             <button mat-button [matMenuTriggerFor]="actionMenu">
                 <mat-icon>more_vert</mat-icon>
             </button>

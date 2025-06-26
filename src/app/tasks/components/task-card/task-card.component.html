@@ -1,0 +1,95 @@
+<div class="task-card" [class.high-priority]="task.priority === 'high'" [class.critical-priority]="task.priority === 'critical'"
+    [class.overdue]="isOverdue()" (click)="onTaskClick()">
+  
+    <!-- Task Header -->
+    <div class="task-header">
+        <div class="task-priority" [class]="'priority-' + task.priority">
+            <mat-icon>{{ getPriorityIcon() }}</mat-icon>
+        </div>
+
+        <button mat-icon-button [matMenuTriggerFor]="taskMenu" (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <!-- Task Content -->
+    <div class="task-content">
+        <h4 class="task-title">{{ task.title }}</h4>
+
+        <p class="task-description" *ngIf="task.description">
+            {{ task.description | slice:0:100 }}
+            <span *ngIf="task.description.length > 100">...</span>
+        </p>
+    </div>
+
+    <!-- Task Meta -->
+    <div class="task-meta">
+        <!-- Due Date -->
+        <div class="task-due-date" [class.overdue]="isOverdue()">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ task.dueDate | date:'MMM dd' }}</span>
+        </div>
+
+        <!-- Estimated Hours -->
+        <div class="task-hours" *ngIf="task.estimatedHours > 0">
+            <mat-icon>access_time</mat-icon>
+            <span>{{ task.estimatedHours }}h</span>
+        </div>
+    </div>
+
+    <!-- Task Footer -->
+    <div class="task-footer">
+        <!-- Status -->
+        <div class="task-status" [class]="'status-' + task.status">
+            {{ getStatusDisplayName() }}
+        </div>
+
+        <!-- Assignee -->
+        <div class="task-assignee" *ngIf="assignee">
+            <div class="assignee-avatar" [title]="assignee.firstName + ' ' + assignee.lastName">
+                {{ assignee.firstName.charAt(0) }}{{ assignee.lastName.charAt(0) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar (for in-progress tasks) -->
+    <div class="task-progress" *ngIf="task.status === 'in_progress' && task.estimatedHours > 0">
+        <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+        </div>
+
+        <span class="progress-text">{{ task.actualHours }}h / {{ task.estimatedHours }}h</span>
+    </div>
+</div>
+
+<!-- Task Menu -->
+<mat-menu #taskMenu="matMenu">
+    <button mat-menu-item (click)="onTaskClick()">
+        <mat-icon>edit</mat-icon>
+        Edit Task
+    </button>
+    
+    <mat-divider></mat-divider>
+    
+    <button mat-menu-item (click)="changeStatus(TaskStatus.TODO)" *ngIf="task.status !== 'todo'">
+        <mat-icon>radio_button_unchecked</mat-icon>
+        Move to To Do
+    </button>
+    
+    <button mat-menu-item (click)="changeStatus(TaskStatus.IN_PROGRESS)" *ngIf="task.status !== 'in_progress'">
+        <mat-icon>play_circle</mat-icon>
+        Move to In Progress
+    </button>
+    
+    <button mat-menu-item (click)="changeStatus(TaskStatus.DONE)" *ngIf="task.status !== 'done'">
+        <mat-icon>check_circle</mat-icon>
+        Move to Done
+    </button>
+    
+    <mat-divider></mat-divider>
+    
+    <button mat-menu-item (click)="onDeleteTask()" class="delete-action">
+        <mat-icon>delete</mat-icon>
+        Delete Task
+    </button>
+</mat-menu>

@@ -35,8 +35,8 @@ export class SidebarComponent implements OnInit {
     },
     {
       path: '/tasks',
-      label: 'Tasks',
-      icon: 'task'
+      label: 'My Tasks',
+      icon: 'assignment'
     },
     {
       path: '/team',

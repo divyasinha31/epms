@@ -1,0 +1,145 @@
+.task-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  
+  .back-button {
+    flex-shrink: 0;
+  }
+  
+  .header-content {
+    h1 {
+      margin: 0 0 8px 0;
+      color: #333;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .subtitle {
+      margin: 0;
+      color: #666;
+      font-size: 1rem;
+    }
+  }
+}
+
+.form-card {
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+    
+    .full-width {
+      grid-column: 1 / -1;
+    }
+  }
+  
+  .priority-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    &.low {
+      color: #4caf50;
+    }
+    
+    &.medium {
+      color: #2196f3;
+    }
+    
+    &.high {
+      color: #ff9800;
+    }
+    
+    &.critical {
+      color: #f44336;
+    }
+  }
+  
+  .user-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background-color: #1976d2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      
+      .user-name {
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .user-email {
+        font-size: 0.8rem;
+        color: #666;
+      }
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
+    
+    button {
+      min-width: 120px;
+      
+      &[mat-raised-button] {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .task-form-container {
+    padding: 0 8px;
+  }
+  
+  .form-header {
+    .header-content h1 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

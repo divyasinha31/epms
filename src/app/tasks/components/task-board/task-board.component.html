@@ -1,0 +1,73 @@
+<div class="task-board-container">
+    <!-- Header -->
+    <div class="board-header">
+        <div class="header-content">
+            <button mat-icon-button (click)="goBack()" class="back-button">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+
+            <div class="header-info">
+                <h1>{{ projectName }} - Tasks</h1>
+                <p class="subtitle">Manage and track project tasks</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button mat-raised-button color="primary" (click)="createTask()">
+                <mat-icon>add</mat-icon>
+                New Task
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <app-task-filters [availableUsers]="availableUsers" (filtersChange)="onFiltersChange($event)"></app-task-filters>
+
+    <!-- Task Board -->
+    <div class="task-board" *ngIf="!loading">
+        <div class="board-columns" cdkDropListGroup>
+        
+            <!-- Task Column -->
+            <div class="task-column" *ngFor="let column of columns; trackBy: trackByColumnId">
+                <!-- Column Header -->
+                <div class="column-header" [style.border-left-color]="column.color">
+                    <div class="column-title">
+                        <h3>{{ column.title }}</h3>
+                        <span class="task-count">{{ column.tasks.length }}</span>
+                    </div>
+                </div>
+
+                <!-- Task List -->
+                <div class="column-content" cdkDropList [cdkDropListData]="column.tasks" [id]="column.id" (cdkDropListDropped)="onTaskDrop($event)">
+                    <app-task-card *ngFor="let task of column.tasks; trackBy: trackByTaskId" [task]="task"
+                        [assignee]="getTaskAssignee(task.assigneeId)" cdkDrag (taskClick)="editTask(task.id)"
+                        (statusChange)="onTaskStatusChange(task, $event)" (deleteTask)="deleteTask(task.id)">
+                    </app-task-card>
+
+                    <!-- Empty State -->
+                    <div class="empty-column" *ngIf="column.tasks.length === 0">
+                        <mat-icon>add_circle_outline</mat-icon>
+                        <p>No {{ column.title.toLowerCase() }} tasks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading tasks...</p>
+    </div>
+
+    <!-- No Project -->
+    <div class="no-project" *ngIf="!projectId && !loading">
+        <mat-icon>error</mat-icon>
+        <h3>Project not found</h3>
+        <p>Please select a valid project to view tasks</p>
+
+        <button mat-raised-button color="primary" (click)="goBack()">
+            Back to Projects
+        </button>
+    </div>
+</div>
