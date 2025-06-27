@@ -1,0 +1,208 @@
+/* src/app/users/components/user-form/user-form.component.scss */
+.user-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  
+  .back-button {
+    flex-shrink: 0;
+  }
+  
+  .header-content {
+    h1 {
+      margin: 0 0 8px 0;
+      color: #333;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .subtitle {
+      margin: 0;
+      color: #666;
+      font-size: 1rem;
+    }
+  }
+}
+
+.form-card {
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  
+  .form-section {
+    &.full-width {
+      width: 100%;
+    }
+    
+    h3 {
+      margin: 0 0 20px 0;
+      color: #333;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      
+      .full-width {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+  
+  .role-option {
+    .role-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      
+      .role-name {
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .role-description {
+        font-size: 0.9rem;
+        color: #666;
+      }
+    }
+  }
+  
+  .status-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    &.active {
+      color: #4caf50;
+    }
+    
+    &.inactive {
+      color: #f44336;
+    }
+    
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+  
+  .password-requirements {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #2196f3;
+    
+    h4 {
+      margin: 0 0 12px 0;
+      color: #333;
+      font-size: 1rem;
+    }
+    
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      
+      li {
+        margin-bottom: 4px;
+        color: #666;
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
+    
+    button {
+      min-width: 120px;
+      
+      &[mat-raised-button] {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+// Form validation styles
+.mat-mdc-form-field {
+  &.ng-invalid.ng-touched {
+    .mat-mdc-form-field-outline-thick {
+      border-color: #f44336;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .user-form-container {
+    padding: 0 8px;
+  }
+  
+  .form-header {
+    .header-content h1 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .form-section .section-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .password-requirements {
+    h4 {
+      font-size: 0.9rem;
+    }
+    
+    ul li {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .form-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    
+    .back-button {
+      align-self: flex-start;
+    }
+    
+    .header-content {
+      width: 100%;
+    }
+  }
+}
