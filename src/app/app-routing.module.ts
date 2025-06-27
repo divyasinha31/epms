@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [authGuard] },
   { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule), canActivate: [authGuard, roleGuard], data: { roles: [UserRole.ADMIN, UserRole.PROJECT_MANAGER] } },
   { path: 'tasks', loadChildren: () => import('./tasks/tasks.module').then(m => m.TasksModule), canActivate: [authGuard] },
+  { path: 'users', loadChildren: () => import('./users/users.module').then(m => m.UsersModule), canActivate: [authGuard, roleGuard], data: { roles: [UserRole.ADMIN] } },
   { path: '**', redirectTo: '/dashboard' }
 ];
 
