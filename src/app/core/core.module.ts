@@ -1,9 +1,17 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+
+// Services
 import { ApiService } from './services/api.service';
 import { NotificationService } from './services/notification.service';
+import { LoadingService } from './services/loading.service';
+
+// Interceptors
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [],
@@ -14,7 +22,25 @@ import { NotificationService } from './services/notification.service';
   ],
   providers: [
     ApiService,
-    NotificationService
+    NotificationService,
+    LoadingService,
+    
+    // HTTP Interceptors
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule {
