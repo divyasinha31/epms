@@ -1,4 +1,8 @@
 <div class="app-container">
+  <button (click)="forceLogout()" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
+    Force Logout (Debug)
+  </button>
+
   <app-layout *ngIf="isLoggedIn"></app-layout>
   <router-outlet *ngIf="!isLoggedIn"></router-outlet>
 </div>

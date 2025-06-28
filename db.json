@@ -1,0 +1,207 @@
+{
+  "users": [
+    {
+        "id": "1",
+        "email": "admin@epms.com",
+        "password": "$2b$10$rFgS8bZJK7vR.5EuVwM4SugF8U8Jy.Qx7g/3vL9xQ1YfHvGKx.2yK",
+        "firstName": "Admin",
+        "lastName": "User",
+        "role": "admin",
+        "isActive": true,
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "2",
+        "email": "pm@epms.com",
+        "password": "$2b$10$rFgS8bZJK7vR.5EuVwM4SugF8U8Jy.Qx7g/3vL9xQ1YfHvGKx.2yK",
+        "firstName": "Project",
+        "lastName": "Manager",
+        "role": "project_manager",
+        "isActive": true,
+        "createdAt": "2024-01-02T00:00:00.000Z",
+        "updatedAt": "2024-01-02T00:00:00.000Z"
+    },
+    {
+        "id": "3",
+        "email": "dev@epms.com",
+        "password": "$2b$10$rFgS8bZJK7vR.5EuVwM4SugF8U8Jy.Qx7g/3vL9xQ1YfHvGKx.2yK",
+        "firstName": "John",
+        "lastName": "Developer",
+        "role": "developer",
+        "isActive": true,
+        "createdAt": "2024-01-03T00:00:00.000Z",
+        "updatedAt": "2024-01-03T00:00:00.000Z"
+    },
+    {
+        "id": "4",
+        "email": "jane.dev@epms.com",
+        "password": "$2b$10$rFgS8bZJK7vR.5EuVwM4SugF8U8Jy.Qx7g/3vL9xQ1YfHvGKx.2yK",
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "role": "developer",
+        "isActive": false,
+        "createdAt": "2024-01-04T00:00:00.000Z",
+        "updatedAt": "2024-01-04T00:00:00.000Z"
+    },
+    {
+        "id": "5",
+        "email": "mike.pm@epms.com",
+        "password": "$2b$10$rFgS8bZJK7vR.5EuVwM4SugF8U8Jy.Qx7g/3vL9xQ1YfHvGKx.2yK",
+        "firstName": "Mike",
+        "lastName": "Johnson",
+        "role": "project_manager",
+        "isActive": true,
+        "createdAt": "2024-01-05T00:00:00.000Z",
+        "updatedAt": "2024-01-05T00:00:00.000Z"
+    }
+  ],
+  "projects": [
+    {
+        "id": "1",
+        "name": "Mobile App Redesign",
+        "description": "Complete redesign of the mobile application with new UI/UX",
+        "status": "in_progress",
+        "startDate": "2024-01-15T00:00:00.000Z",
+        "endDate": "2024-06-30T00:00:00.000Z",
+        "managerId": "2",
+        "teamMembers": ["2", "3"],
+        "createdAt": "2024-01-10T00:00:00.000Z",
+        "updatedAt": "2024-02-15T00:00:00.000Z"
+    },
+    {
+        "id": "2",
+        "name": "E-commerce Platform",
+        "description": "Development of new e-commerce platform with payment integration",
+        "status": "planning",
+        "startDate": "2024-03-01T00:00:00.000Z",
+        "endDate": "2024-12-31T00:00:00.000Z",
+        "managerId": "5",
+        "teamMembers": ["3", "4"],
+        "createdAt": "2024-02-20T00:00:00.000Z",
+        "updatedAt": "2024-02-25T00:00:00.000Z"
+    },
+    {
+        "id": "3",
+        "name": "Database Migration",
+        "description": "Migration from legacy database to modern cloud solution",
+        "status": "completed",
+        "startDate": "2023-10-01T00:00:00.000Z",
+        "endDate": "2024-02-15T00:00:00.000Z",
+        "managerId": "2",
+        "teamMembers": ["3"],
+        "createdAt": "2023-09-15T00:00:00.000Z",
+        "updatedAt": "2024-02-15T00:00:00.000Z"
+    }
+  ],
+  "tasks": [
+    {
+        "id": "1",
+        "title": "Setup Authentication System",
+        "description": "Implement JWT authentication with login/logout functionality",
+        "status": "done",
+        "priority": "high",
+        "projectId": "1",
+        "assigneeId": "3",
+        "dueDate": "2024-03-15T00:00:00.000Z",
+        "estimatedHours": 16,
+        "actualHours": 14,
+        "order": 1,
+        "createdAt": "2024-02-01T00:00:00.000Z",
+        "updatedAt": "2024-02-15T00:00:00.000Z"
+    },
+    {
+        "id": "2",
+        "title": "Design User Dashboard",
+        "description": "Create wireframes and mockups for the main user dashboard",
+        "status": "done",
+        "priority": "medium",
+        "projectId": "1",
+        "assigneeId": "2",
+        "dueDate": "2024-03-10T00:00:00.000Z",
+        "estimatedHours": 12,
+        "actualHours": 10,
+        "order": 2,
+        "createdAt": "2024-02-03T00:00:00.000Z",
+        "updatedAt": "2024-02-12T00:00:00.000Z"
+    },
+    {
+        "id": "3",
+        "title": "Implement Project Management API",
+        "description": "Build REST API endpoints for project CRUD operations",
+        "status": "in_progress",
+        "priority": "high",
+        "projectId": "1",
+        "assigneeId": "3",
+        "dueDate": "2024-03-25T00:00:00.000Z",
+        "estimatedHours": 24,
+        "actualHours": 8,
+        "order": 1,
+        "createdAt": "2024-02-05T00:00:00.000Z",
+        "updatedAt": "2024-02-20T00:00:00.000Z"
+    },
+    {
+        "id": "4",
+        "title": "Setup Database Schema",
+        "description": "Design and implement database tables for the application",
+        "status": "in_progress",
+        "priority": "critical",
+        "projectId": "1",
+        "assigneeId": "3",
+        "dueDate": "2024-03-20T00:00:00.000Z",
+        "estimatedHours": 20,
+        "actualHours": 12,
+        "order": 2,
+        "createdAt": "2024-02-07T00:00:00.000Z",
+        "updatedAt": "2024-02-18T00:00:00.000Z"
+    },
+    {
+        "id": "5",
+        "title": "Frontend Component Library",
+        "description": "Create reusable UI components for the frontend",
+        "status": "todo",
+        "priority": "medium",
+        "projectId": "1",
+        "assigneeId": "2",
+        "dueDate": "2024-04-05T00:00:00.000Z",
+        "estimatedHours": 32,
+        "actualHours": 0,
+        "order": 1,
+        "createdAt": "2024-02-10T00:00:00.000Z",
+        "updatedAt": "2024-02-10T00:00:00.000Z"
+    }
+  ], "notifications": [
+    {
+        "id": "1",
+        "userId": "3",
+        "type": "task_assigned",
+        "title": "New Task Assigned",
+        "message": "You have been assigned to 'Setup Authentication System'",
+        "isRead": false,
+        "createdAt": "2024-02-01T00:00:00.000Z",
+        "actionUrl": "/tasks"
+    },
+    {
+        "id": "2",
+        "userId": "2",
+        "type": "project_updated",
+        "title": "Project Updated",
+        "message": "Mobile App Redesign project has been updated",
+        "isRead": true,
+        "createdAt": "2024-02-15T00:00:00.000Z",
+        "actionUrl": "/projects/1"
+    },
+    {
+        "id": "3",
+        "userId": "3",
+        "type": "task_due",
+        "title": "Task Due Soon",
+        "message": "Task 'Implement Project Management API' is due in 2 days",
+        "isRead": false,
+        "createdAt": "2024-02-23T00:00:00.000Z",
+        "actionUrl": "/tasks"
+    }
+  ], "auth": {
+    "tokens": []
+  }
+}

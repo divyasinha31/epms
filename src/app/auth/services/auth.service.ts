@@ -23,10 +23,10 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials)
+    return this.http.post<LoginResponse>('/auth/login', credentials)
       .pipe(
         map(response => {
-          // Store user details and token in local storage
+          // Store user details and tokens in local storage
           localStorage.setItem('currentUser', JSON.stringify(response.user));
           localStorage.setItem(environment.tokenKey, response.token);
           localStorage.setItem(environment.refreshTokenKey, response.refreshToken);
@@ -52,7 +52,11 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem(environment.tokenKey);
-    return !!token && !this.isTokenExpired(token);
+    const user = localStorage.getItem('currentUser');
+    
+    console.log('isAuthenticated check:', { token: !!token, user: !!user }); // Debug log
+    
+    return !!token && !!user && !this.isTokenExpired(token);
   }
 
   hasRole(role: UserRole): boolean {
@@ -81,12 +85,22 @@ export class AuthService {
 
   refreshToken(): Observable<LoginResponse> {
     const refreshToken = localStorage.getItem(environment.refreshTokenKey);
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
+    
+    if (!refreshToken) {
+      this.logout();
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    return this.http.post<LoginResponse>('/auth/refresh', { refreshToken })
       .pipe(
         map(response => {
           localStorage.setItem(environment.tokenKey, response.token);
           localStorage.setItem(environment.refreshTokenKey, response.refreshToken);
           return response;
+        }),
+        catchError(error => {
+          this.logout();
+          return throwError(() => error);
         })
       );
   }
