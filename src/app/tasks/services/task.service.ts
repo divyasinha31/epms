@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../../core/services/api.service';
 import { Task, TaskStatus, TaskPriority } from '../../core/models/task.model';
 import { User } from '../../core/models/user.model';
+import { NotificationIntegrationService } from '../../notifications/services/notification-integration.service';
 
 export interface TaskFilters {
   search?: string;
@@ -41,7 +43,7 @@ export interface TaskColumn {
 })
 export class TaskService {
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private notificationIntegration: NotificationIntegrationService) {}
 
   getProjectTasks(projectId: string, filters?: TaskFilters): Observable<Task[]> {
     // Mock data - replace with real API call
@@ -120,36 +122,6 @@ export class TaskService {
         order: 1,
         createdAt: new Date('2024-02-10'),
         updatedAt: new Date('2024-02-10')
-      },
-      {
-        id: '6',
-        title: 'Write Unit Tests',
-        description: 'Implement comprehensive unit tests for core functionality',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.LOW,
-        projectId,
-        assigneeId: 'dev1',
-        dueDate: new Date('2024-04-15'),
-        estimatedHours: 16,
-        actualHours: 0,
-        order: 2,
-        createdAt: new Date('2024-02-12'),
-        updatedAt: new Date('2024-02-12')
-      },
-      {
-        id: '7',
-        title: 'Performance Optimization',
-        description: 'Optimize application performance and loading times',
-        status: TaskStatus.TODO,
-        priority: TaskPriority.MEDIUM,
-        projectId,
-        assigneeId: 'dev3',
-        dueDate: new Date('2024-04-30'),
-        estimatedHours: 20,
-        actualHours: 0,
-        order: 3,
-        createdAt: new Date('2024-02-15'),
-        updatedAt: new Date('2024-02-15')
       }
     ];
 
@@ -189,13 +161,11 @@ export class TaskService {
     }
 
     return of(filteredTasks);
-    // Real API call would be:
-    // return this.apiService.get<Task[]>(`/projects/${projectId}/tasks`, filters);
   }
 
   getTaskColumns(projectId: string, filters?: TaskFilters): Observable<TaskColumn[]> {
-    return new Observable(observer => {
-      this.getProjectTasks(projectId, filters).subscribe(tasks => {
+    return this.getProjectTasks(projectId, filters).pipe(
+      map(tasks => {
         const columns: TaskColumn[] = [
           {
             id: TaskStatus.TODO,
@@ -219,10 +189,9 @@ export class TaskService {
             color: '#4caf50'
           }
         ];
-        observer.next(columns);
-        observer.complete();
-      });
-    });
+        return columns;
+      })
+    );
   }
 
   getTask(taskId: string): Observable<Task> {
@@ -244,12 +213,9 @@ export class TaskService {
     };
 
     return of(mockTask);
-    // Real API call would be:
-    // return this.apiService.get<Task>(`/tasks/${taskId}`);
   }
 
   createTask(task: CreateTaskRequest): Observable<Task> {
-    // Mock data - replace with real API call
     const newTask: Task = {
       id: Date.now().toString(),
       ...task,
@@ -260,32 +226,51 @@ export class TaskService {
       updatedAt: new Date()
     };
 
-    return of(newTask);
-    // Real API call would be:
-    // return this.apiService.post<Task>('/tasks', task);
+    // Get assignee details and send notification
+    return this.getProjectUsers(task.projectId).pipe(
+      map(users => users.find(user => user.id === task.assigneeId)),
+      switchMap(assignee => {
+        if (assignee) {
+          return this.notificationIntegration.notifyTaskAssigned(newTask, assignee).pipe(
+            map(() => newTask)
+          );
+        }
+        return of(newTask);
+      })
+    );
   }
 
   updateTask(taskId: string, updates: UpdateTaskRequest): Observable<Task> {
-    // Mock data - replace with real API call
-    const updatedTask: Task = {
-      id: taskId,
-      title: updates.title || 'Updated Task',
-      description: updates.description || 'Updated description',
-      status: updates.status || TaskStatus.TODO,
-      priority: updates.priority || TaskPriority.MEDIUM,
-      projectId: updates.projectId || 'project1',
-      assigneeId: updates.assigneeId || 'dev1',
-      dueDate: updates.dueDate || new Date(),
-      estimatedHours: updates.estimatedHours || 8,
-      actualHours: updates.actualHours || 0,
-      order: updates.order || 1,
-      createdAt: new Date('2024-02-15'),
-      updatedAt: new Date()
-    };
+    return this.getTask(taskId).pipe(
+      switchMap(currentTask => {
+        const updatedTask: Task = {
+          ...currentTask,
+          ...updates,
+          updatedAt: new Date()
+        };
 
-    return of(updatedTask);
-    // Real API call would be:
-    // return this.apiService.put<Task>(`/tasks/${taskId}`, updates);
+        // Get assignee details for notifications
+        return this.getProjectUsers(currentTask.projectId).pipe(
+          map(users => users.find(user => user.id === currentTask.assigneeId)),
+          switchMap(assignee => {
+            if (!assignee) {
+              return of(updatedTask);
+            }
+
+            // Check if status changed to done
+            if (updates.status === TaskStatus.DONE && currentTask.status !== TaskStatus.DONE) {
+              return this.notificationIntegration.notifyTaskStatusChanged(
+                updatedTask, currentTask.status, updates.status, assignee
+              ).pipe(
+                map(() => updatedTask)
+              );
+            }
+
+            return of(updatedTask);
+          })
+        );
+      })
+    );
   }
 
   updateTaskStatus(taskId: string, status: TaskStatus, order?: number): Observable<Task> {
@@ -299,16 +284,12 @@ export class TaskService {
   deleteTask(taskId: string): Observable<void> {
     // Mock data - replace with real API call
     return of(void 0);
-    // Real API call would be:
-    // return this.apiService.delete<void>(`/tasks/${taskId}`);
   }
 
   reorderTasks(projectId: string, tasks: { taskId: string; status: TaskStatus; order: number }[]): Observable<void> {
     // Mock data - replace with real API call
     console.log('Reordering tasks:', tasks);
     return of(void 0);
-    // Real API call would be:
-    // return this.apiService.patch<void>(`/projects/${projectId}/tasks/reorder`, { tasks });
   }
 
   getProjectUsers(projectId: string): Observable<User[]> {
@@ -343,11 +324,93 @@ export class TaskService {
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        id: 'dev4',
+        email: 'sarah.dev@company.com',
+        firstName: 'Sarah',
+        lastName: 'Wilson',
+        role: 'developer' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
     return of(mockUsers);
-    // Real API call would be:
-    // return this.apiService.get<User[]>(`/projects/${projectId}/users`);
+  }
+
+  // Method to check for due tasks and send reminders
+  checkTaskDueDates(): Observable<void> {
+    // Get all active projects and their tasks
+    return this.getProjectTasks('all').pipe(
+      switchMap(allTasks => {
+        const now = new Date();
+        const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        
+        // Find tasks due soon
+        const tasksDueSoon = allTasks.filter(task => {
+          const dueDate = new Date(task.dueDate);
+          return dueDate <= tomorrow && dueDate > now && task.status !== TaskStatus.DONE;
+        });
+
+        if (tasksDueSoon.length === 0) {
+          return of(void 0);
+        }
+
+        // Get all users
+        return this.getProjectUsers('all').pipe(
+          switchMap(allUsers => {
+            const notificationPromises = tasksDueSoon.map(task => {
+              const assignee = allUsers.find(user => user.id === task.assigneeId);
+              if (assignee) {
+                return this.notificationIntegration.notifyTaskDueSoon(task, assignee);
+              }
+              return of(null);
+            });
+
+            return forkJoin(notificationPromises.filter(p => p !== null)).pipe(
+              map(() => void 0)
+            );
+          })
+        );
+      })
+    );
+  }
+
+  // Method to check for overdue tasks
+  checkOverdueTasks(): Observable<void> {
+    return this.getProjectTasks('all').pipe(
+      switchMap(allTasks => {
+        const now = new Date();
+        
+        // Find overdue tasks
+        const overdueTasks = allTasks.filter(task => {
+          const dueDate = new Date(task.dueDate);
+          return dueDate < now && task.status !== TaskStatus.DONE;
+        });
+
+        if (overdueTasks.length === 0) {
+          return of(void 0);
+        }
+
+        // Get all users
+        return this.getProjectUsers('all').pipe(
+          switchMap(allUsers => {
+            const notificationPromises = overdueTasks.map(task => {
+              const assignee = allUsers.find(user => user.id === task.assigneeId);
+              if (assignee) {
+                return this.notificationIntegration.notifyTaskOverdue(task, assignee);
+              }
+              return of(null);
+            });
+
+            return forkJoin(notificationPromises.filter(p => p !== null)).pipe(
+              map(() => void 0)
+            );
+          })
+        );
+      })
+    );
   }
 }

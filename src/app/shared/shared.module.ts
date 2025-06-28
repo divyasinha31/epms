@@ -1,3 +1,5 @@
+// src/app/shared/shared.module.ts (Updated)
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -10,6 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+// Notifications Module
+import { NotificationsModule } from '../notifications/notifications.module';
 
 // Components
 import { HeaderComponent } from './components/header/header.component';
@@ -31,7 +37,8 @@ import { LayoutComponent } from './components/layout/layout.component';
     MatMenuModule,
     MatBadgeModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ],
   exports: [
     HeaderComponent,

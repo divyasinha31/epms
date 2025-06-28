@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../../core/services/api.service';
 import { Project, ProjectStatus } from '../../core/models/project.model';
 import { User } from '../../core/models/user.model';
+import { NotificationIntegrationService } from '../../notifications/services/notification-integration.service';
 
 export interface ProjectFilters {
   search?: string;
@@ -38,7 +40,10 @@ export interface UpdateProjectRequest extends Partial<CreateProjectRequest> {
 })
 export class ProjectService {
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private notificationIntegration: NotificationIntegrationService
+  ) {}
 
   getProjects(page: number = 1, limit: number = 10, filters?: ProjectFilters): Observable<PaginatedProjects> {
     // Mock data - replace with real API call
@@ -78,30 +83,6 @@ export class ProjectService {
         teamMembers: ['dev1', 'dev6'],
         createdAt: new Date('2023-09-15'),
         updatedAt: new Date('2024-02-15')
-      },
-      {
-        id: '4',
-        name: 'Security Audit',
-        description: 'Comprehensive security audit and vulnerability assessment',
-        status: ProjectStatus.ON_HOLD,
-        startDate: new Date('2024-02-01'),
-        endDate: new Date('2024-04-30'),
-        managerId: 'mgr3',
-        teamMembers: ['dev7', 'dev8'],
-        createdAt: new Date('2024-01-25'),
-        updatedAt: new Date('2024-02-10')
-      },
-      {
-        id: '5',
-        name: 'API Development',
-        description: 'RESTful API development for third-party integrations',
-        status: ProjectStatus.IN_PROGRESS,
-        startDate: new Date('2024-01-20'),
-        endDate: new Date('2024-05-20'),
-        managerId: 'mgr2',
-        teamMembers: ['dev3', 'dev5', 'dev9'],
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-02-20')
       }
     ];
 
@@ -148,8 +129,6 @@ export class ProjectService {
     };
 
     return of(result);
-    // Real API call would be:
-    // return this.apiService.get<PaginatedProjects>('/projects', { page, limit, ...filters });
   }
 
   getProject(id: string): Observable<Project> {
@@ -168,8 +147,6 @@ export class ProjectService {
     };
 
     return of(mockProject);
-    // Real API call would be:
-    // return this.apiService.get<Project>(`/projects/${id}`);
   }
 
   createProject(project: CreateProjectRequest): Observable<Project> {
@@ -182,56 +159,102 @@ export class ProjectService {
       updatedAt: new Date()
     };
 
-    return of(newProject);
-    // Real API call would be:
-    // return this.apiService.post<Project>('/projects', project);
+    // Get team member details and send notifications
+    return this.getAvailableUsers().pipe(
+      map(allUsers => {
+        // Filter users based on team member IDs
+        const teamMembers = allUsers.filter(user => project.teamMembers.includes(user.id));
+        return { project: newProject, teamMembers };
+      }),
+      switchMap(({ project: createdProject, teamMembers }) => {
+        // Send notifications to team members
+        return this.notificationIntegration.notifyProjectAssigned(createdProject, teamMembers).pipe(
+          map(() => createdProject)
+        );
+      })
+    );
   }
 
   updateProject(id: string, updates: UpdateProjectRequest): Observable<Project> {
-    // Mock data - replace with real API call
-    const updatedProject: Project = {
-      id,
-      name: updates.name || 'Updated Project',
-      description: updates.description || 'Updated description',
-      status: updates.status || ProjectStatus.IN_PROGRESS,
-      startDate: updates.startDate || new Date(),
-      endDate: updates.endDate || new Date(),
-      managerId: updates.managerId || 'mgr1',
-      teamMembers: updates.teamMembers || [],
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date()
-    };
+    // Get the existing project first
+    return this.getProject(id).pipe(
+      switchMap(existingProject => {
+        const updatedProject: Project = {
+          ...existingProject,
+          ...updates,
+          updatedAt: new Date()
+        };
 
-    return of(updatedProject);
-    // Real API call would be:
-    // return this.apiService.put<Project>(`/projects/${id}`, updates);
+        // Get team member details
+        return this.getAvailableUsers().pipe(
+          map(allUsers => {
+            const teamMembers = allUsers.filter(user => updatedProject.teamMembers.includes(user.id));
+            return { project: updatedProject, teamMembers, existingProject };
+          }),
+          switchMap(({ project, teamMembers, existingProject }) => {
+            // Check what was updated and send appropriate notifications
+            let updateDetails = '';
+            if (updates.name && updates.name !== existingProject.name) {
+              updateDetails += `Name changed to "${updates.name}". `;
+            }
+            if (updates.status && updates.status !== existingProject.status) {
+              updateDetails += `Status changed to ${this.getStatusDisplayName(updates.status)}. `;
+            }
+            if (updates.endDate && updates.endDate !== existingProject.endDate) {
+              updateDetails += `Deadline updated to ${updates.endDate.toDateString()}. `;
+            }
+
+            if (updateDetails) {
+              return this.notificationIntegration.notifyProjectUpdated(project, teamMembers, updateDetails.trim()).pipe(
+                map(() => project)
+              );
+            }
+
+            return of(project);
+          })
+        );
+      })
+    );
   }
 
   deleteProject(id: string): Observable<void> {
     // Mock data - replace with real API call
     return of(void 0);
-    // Real API call would be:
-    // return this.apiService.delete<void>(`/projects/${id}`);
   }
 
   assignUsers(projectId: string, userIds: string[]): Observable<Project> {
-    // Mock data - replace with real API call
-    const updatedProject: Project = {
-      id: projectId,
-      name: 'Updated Project',
-      description: 'Project with new team members',
-      status: ProjectStatus.IN_PROGRESS,
-      startDate: new Date(),
-      endDate: new Date(),
-      managerId: 'mgr1',
-      teamMembers: userIds,
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date()
-    };
+    return this.getProject(projectId).pipe(
+      switchMap(existingProject => {
+        const updatedProject: Project = {
+          ...existingProject,
+          teamMembers: userIds,
+          updatedAt: new Date()
+        };
 
-    return of(updatedProject);
-    // Real API call would be:
-    // return this.apiService.patch<Project>(`/projects/${projectId}/assign`, { userIds });
+        // Get user details for newly assigned users
+        return this.getAvailableUsers().pipe(
+          map(allUsers => {
+            // Find newly assigned users (not in existing team)
+            const newlyAssignedUserIds = userIds.filter(userId => 
+              !existingProject.teamMembers.includes(userId)
+            );
+            const newlyAssignedUsers = allUsers.filter(user => 
+              newlyAssignedUserIds.includes(user.id)
+            );
+            return { project: updatedProject, newUsers: newlyAssignedUsers };
+          }),
+          switchMap(({ project, newUsers }) => {
+            // Send notifications only to newly assigned users
+            if (newUsers.length > 0) {
+              return this.notificationIntegration.notifyProjectAssigned(project, newUsers).pipe(
+                map(() => project)
+              );
+            }
+            return of(project);
+          })
+        );
+      })
+    );
   }
 
   getAvailableUsers(): Observable<User[]> {
@@ -258,10 +281,60 @@ export class ProjectService {
         updatedAt: new Date()
       },
       {
-        id: 'mgr1',
-        email: 'mike.pm@company.com',
+        id: 'dev3',
+        email: 'mike.dev@company.com',
         firstName: 'Mike',
+        lastName: 'Johnson',
+        role: 'developer' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'dev4',
+        email: 'sarah.dev@company.com',
+        firstName: 'Sarah',
+        lastName: 'Wilson',
+        role: 'developer' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'dev5',
+        email: 'alex.dev@company.com',
+        firstName: 'Alex',
+        lastName: 'Brown',
+        role: 'developer' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'dev6',
+        email: 'lisa.dev@company.com',
+        firstName: 'Lisa',
+        lastName: 'Davis',
+        role: 'developer' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'mgr1',
+        email: 'john.manager@company.com',
+        firstName: 'John',
         lastName: 'Manager',
+        role: 'project_manager' as any,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'mgr2',
+        email: 'mary.manager@company.com',
+        firstName: 'Mary',
+        lastName: 'ProjectLead',
         role: 'project_manager' as any,
         isActive: true,
         createdAt: new Date(),
@@ -270,7 +343,54 @@ export class ProjectService {
     ];
 
     return of(mockUsers);
-    // Real API call would be:
-    // return this.apiService.get<User[]>('/users');
+  }
+
+  // Helper method for status display names
+  private getStatusDisplayName(status: ProjectStatus): string {
+    const statusMap = {
+      [ProjectStatus.PLANNING]: 'Planning',
+      [ProjectStatus.IN_PROGRESS]: 'In Progress',
+      [ProjectStatus.ON_HOLD]: 'On Hold',
+      [ProjectStatus.COMPLETED]: 'Completed',
+      [ProjectStatus.CANCELLED]: 'Cancelled'
+    };
+    return statusMap[status] || status;
+  }
+
+  // Method to check for upcoming deadlines and send reminders
+  checkProjectDeadlines(): Observable<void> {
+    return this.getProjects(1, 100).pipe(
+      switchMap(response => {
+        const projects = response.projects;
+        const now = new Date();
+        const fiveDaysFromNow = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+        // Find projects with deadlines approaching
+        const projectsWithApproachingDeadlines = projects.filter(project => {
+          const endDate = new Date(project.endDate);
+          return endDate <= fiveDaysFromNow && endDate > now && project.status !== ProjectStatus.COMPLETED;
+        });
+
+        if (projectsWithApproachingDeadlines.length === 0) {
+          return of(void 0);
+        }
+
+        // Get all users and send deadline reminders
+        return this.getAvailableUsers().pipe(
+          switchMap(allUsers => {
+            const notificationPromises = projectsWithApproachingDeadlines.map(project => {
+              const teamMembers = allUsers.filter(user => project.teamMembers.includes(user.id));
+              const daysLeft = Math.ceil((new Date(project.endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              
+              return this.notificationIntegration.notifyProjectDeadlineApproaching(project, teamMembers, daysLeft);
+            });
+
+            return forkJoin(notificationPromises).pipe(
+              map(() => void 0)
+            );
+          })
+        );
+      })
+    );
   }
 }

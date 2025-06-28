@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule), canActivate: [authGuard, roleGuard], data: { roles: [UserRole.ADMIN, UserRole.PROJECT_MANAGER] } },
   { path: 'tasks', loadChildren: () => import('./tasks/tasks.module').then(m => m.TasksModule), canActivate: [authGuard] },
   { path: 'users', loadChildren: () => import('./users/users.module').then(m => m.UsersModule), canActivate: [authGuard, roleGuard], data: { roles: [UserRole.ADMIN] } },
+  { path: 'notifications', loadChildren: () => import('./notifications/notifications.module').then(m => m.NotificationsModule), canActivate: [authGuard] },
   { path: '**', redirectTo: '/auth/login' }
 ];
 

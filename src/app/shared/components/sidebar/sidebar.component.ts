@@ -39,6 +39,11 @@ export class SidebarComponent implements OnInit {
       icon: 'assignment'
     },
     {
+      path: '/notifications',
+      label: 'Notifications',
+      icon: 'notifications'
+    },
+    {
       path: '/team',
       label: 'Team',
       icon: 'people',

@@ -140,8 +140,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     this.taskService.createTask(request)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: () => {
-          this.notificationService.showSuccess('Task created successfully');
+        next: (task) => {
+          this.notificationService.showSuccess('Task created and assignee notified!');
           this.goBack();
         },
         error: (error) => {

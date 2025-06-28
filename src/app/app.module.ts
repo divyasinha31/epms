@@ -7,13 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 // Components
 import { AppComponent } from './app.component';
 
-// Material
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -26,8 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
     CoreModule,
     AuthModule,
     SharedModule,
-    MatCardModule,
-    MatIconModule
+    NotificationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
