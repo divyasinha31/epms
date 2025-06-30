@@ -10,7 +10,7 @@ import { NotificationService } from '../../../core/services/notification.service
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  @Input() currentUser!: User;
+  @Input() currentUser!: User | null;
   @Output() toggleSidebar = new EventEmitter<void>();
 
   constructor(private authService: AuthService, private notificationService: NotificationService, private router: Router) { }
@@ -28,7 +28,9 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserRoleDisplayName(): string {
-    switch (this.currentUser?.role) {
+    if (!this.currentUser) return 'User';
+    
+    switch (this.currentUser.role) {
       case UserRole.ADMIN:
         return 'Administrator';
       case UserRole.PROJECT_MANAGER:
@@ -41,8 +43,8 @@ export class HeaderComponent implements OnInit {
   }
 
   getUserInitials(): string {
-    if (!this.currentUser) return '';
-    return `${this.currentUser.firstName.charAt(0)}${this.currentUser.lastName.charAt(0)}`;
+    if (!this.currentUser) return 'U';
+    return `${this.currentUser.firstName?.charAt(0) || ''}${this.currentUser.lastName?.charAt(0) || ''}`;
   }
 
   navigateToProfile(): void {

@@ -10,17 +10,21 @@ import { User } from '../../../core/models/user.model';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
-  sidebarOpen = true;
-  isMobile = false;
+  sidebarOpen: boolean = true;
+  isMobile: boolean = false;
 
   private destroy$ = new Subject<void>();
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
+    console.log('Layout component initialized'); // Debug log
+    
+    // Get current user
     this.authService.currentUser
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
+        console.log('Layout received user:', user); // Debug log
         this.currentUser = user;
       });
 
@@ -41,11 +45,15 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isMobile = window.innerWidth < 768;
     if (this.isMobile) {
       this.sidebarOpen = false;
+    } else {
+      this.sidebarOpen = true;
     }
+    console.log('Mobile check:', { isMobile: this.isMobile, sidebarOpen: this.sidebarOpen }); // Debug log
   }
 
   onToggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
+    console.log('Sidebar toggled:', this.sidebarOpen); // Debug log
   }
 
   closeSidebar(): void {

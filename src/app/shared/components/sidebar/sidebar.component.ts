@@ -16,7 +16,7 @@ interface MenuItem {
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  @Input() currentUser!: User;
+  @Input() currentUser!: User | null;
   @Input() isOpen = true;
   
   currentRoute = '';
@@ -78,8 +78,8 @@ export class SidebarComponent implements OnInit {
   }
 
   hasPermission(item: MenuItem): boolean {
-    if (!item.roles) return true;
-    return item.roles.includes(this.currentUser?.role);
+    if (!item.roles || !this.currentUser) return true;
+    return item.roles.includes(this.currentUser.role);
   }
 
   navigate(path: string): void {
@@ -87,7 +87,9 @@ export class SidebarComponent implements OnInit {
   }
 
   getUserRoleDisplayName(): string {
-    switch (this.currentUser?.role) {
+    if (!this.currentUser) return 'User';
+
+    switch (this.currentUser.role) {
       case UserRole.ADMIN:
         return 'Administrator';
       case UserRole.PROJECT_MANAGER:

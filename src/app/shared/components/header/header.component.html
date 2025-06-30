@@ -27,7 +27,7 @@
             <button mat-button [matMenuTriggerFor]="userMenu" class="user-button" aria-label="User menu">
                 <div class="user-avatar">{{ getUserInitials() }}</div>
 
-                <span class="user-name hide-mobile">{{ currentUser.firstName }}</span>
+                <span class="user-name hide-mobile">{{ currentUser?.firstName }}</span>
 
                 <mat-icon>arrow_drop_down</mat-icon>
             </button>
@@ -41,11 +41,11 @@
         <div class="user-avatar large">{{ getUserInitials() }}</div>
 
         <div class="user-details">
-            <div class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</div>
+            <div class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
 
             <div class="user-role">{{ getUserRoleDisplayName() }}</div>
 
-            <div class="user-email">{{ currentUser.email }}</div>
+            <div class="user-email">{{ currentUser?.email }}</div>
         </div>
     </div>
 

@@ -1,8 +1,35 @@
 <div class="app-container">
-  <button (click)="forceLogout()" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
-    Force Logout (Debug)
+  <!-- Debug button -->
+  <button (click)="forceLogout()" 
+          style="position: fixed; top: 10px; right: 10px; z-index: 9999; background: red; color: white; padding: 5px;">
+    Debug Logout
   </button>
 
-  <app-layout *ngIf="isLoggedIn"></app-layout>
-  <router-outlet *ngIf="!isLoggedIn"></router-outlet>
+  <!-- Authenticated Layout -->
+  <div class="authenticated-layout" *ngIf="isLoggedIn && currentUser">
+    <!-- Header -->
+    <app-header [currentUser]="currentUser" (toggleSidebar)="toggleSidebar()"></app-header>
+    
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Sidebar -->
+      <app-sidebar [currentUser]="currentUser" [isOpen]="sidebarOpen" class="sidebar"></app-sidebar>
+      
+      <!-- Content Area -->
+      <main class="content-area" [class.sidebar-open]="sidebarOpen">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+
+  <!-- Login Layout -->
+  <div class="login-layout" *ngIf="!isLoggedIn">
+    <router-outlet></router-outlet>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-layout" *ngIf="isLoggedIn && !currentUser">
+    <mat-spinner></mat-spinner>
+    <p>Loading...</p>
+  </div>
 </div>
