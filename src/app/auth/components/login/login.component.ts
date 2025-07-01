@@ -45,13 +45,18 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     
     this.authService.login(this.loginForm.value)
-      .subscribe({ next: (response) => {
+      .subscribe({ 
+        next: (response) => {
           this.notificationService.showSuccess('Login successful!');
-          this.router.navigate([this.returnUrl]);
-        }, error: (error) => {
+          this.router.navigate(['/dashboard']);
+          this.loading = false;
+        }, 
+        error: (error) => {
+          console.error('Login error:', error);
           this.notificationService.showError('Invalid email or password');
           this.loading = false;
-        }});
+        }
+      });
   }
 
   hasError(fieldName: string, errorType: string): boolean {

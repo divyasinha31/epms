@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subject, takeUntil, filter } from 'rxjs';
 import { User } from './core/models/user.model';
 import { AuthService } from './auth/services/auth.service';
 
@@ -14,6 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   sidebarOpen = true;
   isMobile = false;
+  isInitialized = false;
 
   private destroy$ = new Subject<void>();
 
@@ -25,24 +26,17 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('App component initializing...');
+    this.initializeAuthState();
     
-    // Check if user is already logged in
-    this.checkInitialAuthState();
-    
-    // Listen to auth changes
-    this.authService.currentUser
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        console.log('Auth state changed:', user);
-        this.currentUser = user;
-        this.isLoggedIn = !!user;
-        
-        // Handle routing
-        this.handleAuthRouting();
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.updateAuthState();
       });
       
-    // Check mobile on resize
     window.addEventListener('resize', () => this.checkMobile());
   }
 
@@ -52,41 +46,51 @@ export class AppComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', () => this.checkMobile());
   }
 
-  private checkInitialAuthState(): void {
+  private initializeAuthState(): void {
+    this.authService.currentUser
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.updateAuthStateFromUser(user);
+      });
+    
+    this.updateAuthState();
+  }
+
+  private updateAuthState(): void {
     const token = localStorage.getItem('epms_token');
     const storedUser = localStorage.getItem('currentUser');
-    
-    console.log('Initial auth check:', { hasToken: !!token, hasUser: !!storedUser });
     
     if (token && storedUser && this.authService.isAuthenticated()) {
       try {
         const user = JSON.parse(storedUser);
-        this.authService['currentUserSubject'].next(user);
-        console.log('Restored user session:', user);
+        this.updateAuthStateFromUser(user);
+        
+        if (!this.authService.currentUserValue) {
+          this.authService['currentUserSubject'].next(user);
+        }
       } catch (error) {
         console.error('Error parsing stored user:', error);
-        this.forceLogout();
+        this.clearAuthState();
       }
     } else {
-      console.log('No valid session found');
-      this.forceLogout();
+      this.clearAuthState();
     }
   }
 
-  private handleAuthRouting(): void {
-    const currentUrl = this.router.url;
+  private updateAuthStateFromUser(user: User | null): void {
+    this.currentUser = user;
+    this.isLoggedIn = !!user;
+    this.isInitialized = true;
+  }
+
+  private clearAuthState(): void {
+    this.currentUser = null;
+    this.isLoggedIn = false;
+    this.isInitialized = true;
     
-    if (this.isLoggedIn) {
-      if (currentUrl.includes('/auth') || currentUrl === '/') {
-        console.log('Redirecting to dashboard');
-        this.router.navigate(['/dashboard']);
-      }
-    } else {
-      if (!currentUrl.includes('/auth')) {
-        console.log('Redirecting to login');
-        this.router.navigate(['/auth/login']);
-      }
-    }
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('epms_token');
+    localStorage.removeItem('epms_refresh_token');
   }
 
   private checkMobile(): void {
@@ -98,15 +102,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
-    console.log('Sidebar toggled:', this.sidebarOpen);
+  get currentRoute(): string {
+    return this.router.url;
   }
 
-  forceLogout(): void {
-    console.log('Force logout triggered');
-    localStorage.clear();
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
+  get shouldShowAuthLayout(): boolean {
+    return this.isInitialized && this.isLoggedIn && !this.currentRoute.includes('/auth');
+  }
+
+  get shouldShowLoginLayout(): boolean {
+    return this.isInitialized && (!this.isLoggedIn || this.currentRoute.includes('/auth'));
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 }

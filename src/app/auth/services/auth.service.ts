@@ -13,9 +13,31 @@ export class AuthService {
   public currentUser: Observable<User | null>;
 
   constructor(private http: HttpClient) {
-    const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser ? JSON.parse(storedUser) : null);
+    const storedUser = this.getStoredUser();
+    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser);
     this.currentUser = this.currentUserSubject.asObservable();
+  }
+
+  private getStoredUser(): User | null {
+    try {
+      const token = localStorage.getItem(environment.tokenKey);
+      const userStr = localStorage.getItem('currentUser');
+      
+      if (token && userStr && !this.isTokenExpired(token)) {
+        return JSON.parse(userStr);
+      }
+    } catch (error) {
+      console.error('Error parsing stored user:', error);
+      this.clearStoredAuth();
+    }
+    
+    return null;
+  }
+
+  private clearStoredAuth(): void {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem(environment.tokenKey);
+    localStorage.removeItem(environment.refreshTokenKey);
   }
 
   public get currentUserValue(): User | null {
@@ -31,7 +53,9 @@ export class AuthService {
           localStorage.setItem(environment.tokenKey, response.token);
           localStorage.setItem(environment.refreshTokenKey, response.refreshToken);
           
+          // Emit the user to all subscribers
           this.currentUserSubject.next(response.user);
+          
           return response;
         }),
         catchError(error => {
@@ -42,19 +66,13 @@ export class AuthService {
   }
 
   logout(): void {
-    // Remove user from local storage
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem(environment.tokenKey);
-    localStorage.removeItem(environment.refreshTokenKey);
-    
+    this.clearStoredAuth();
     this.currentUserSubject.next(null);
   }
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem(environment.tokenKey);
     const user = localStorage.getItem('currentUser');
-    
-    console.log('isAuthenticated check:', { token: !!token, user: !!user }); // Debug log
     
     return !!token && !!user && !this.isTokenExpired(token);
   }
