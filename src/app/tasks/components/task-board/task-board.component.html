@@ -1,6 +1,6 @@
 <div class="task-board-container">
     <!-- Header -->
-    <div class="board-header">
+    <div class="board-header" *ngIf="!loading && projectId">
         <div class="header-content">
             <button mat-icon-button (click)="goBack()" class="back-button">
                 <mat-icon>arrow_back</mat-icon>
@@ -21,10 +21,10 @@
     </div>
 
     <!-- Filters -->
-    <app-task-filters [availableUsers]="availableUsers" (filtersChange)="onFiltersChange($event)"></app-task-filters>
+    <app-task-filters *ngIf="!loading && projectId" [availableUsers]="availableUsers" (filtersChange)="onFiltersChange($event)"></app-task-filters>
 
     <!-- Task Board -->
-    <div class="task-board" *ngIf="!loading">
+    <div class="task-board" *ngIf="!loading && projectId">
         <div class="board-columns" cdkDropListGroup>
         
             <!-- Task Column -->
@@ -67,7 +67,7 @@
         <p>Please select a valid project to view tasks</p>
 
         <button mat-raised-button color="primary" (click)="goBack()">
-            Back to Projects
+            Go to Projects
         </button>
     </div>
 </div>
