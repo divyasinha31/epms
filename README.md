@@ -48,11 +48,21 @@ In the current application, we have 3 different roles.
 ### Snaps from the portal
 > For Administrator
 > ![](./src/assets/images/dashboard_admin.png "Dashboard For Admin")
+>
 > For Project Manager
 > ![](./src/assets/images/dashboard_pm.png "Dashboard For PM")
+>
 > For Developer
 > ![](./src/assets/images/dashboard_dev.png "Dashboard For Dev")
-> Users Module For Admin
+>
+> Users module for Admin
 > ![](./src/assets/images/user_module.png "Users Module")
-> Projects Module For Admin and Project Manager
+>
+> Projects module for Admin and Project Manager
 > ![](./src/assets/images/project_module.png "Projects Module")
+>
+> Project details
+> ![](./src/assets/images/project_details.png "Project Details")
+>
+> Task details for any project
+> ![](./src/assets/images/project_tasks.png "Task Details")
