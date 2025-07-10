@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-
 import { UserService, CreateUserRequest, UpdateUserRequest } from '../../services/user.service';
 import { User, UserRole } from '../../../core/models/user.model';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -14,13 +13,13 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class UserFormComponent implements OnInit, OnDestroy {
   userForm!: FormGroup;
-  isEditMode = false;
-  loading = false;
+  isEditMode: boolean = false;
+  loading: boolean = false;
   userId?: string;
 
   // Enums for template
   readonly UserRole = UserRole;
-  
+
   // Available roles
   availableRoles = [
     { value: UserRole.DEVELOPER, label: 'Developer', description: 'Can view and manage assigned tasks' },
@@ -30,13 +29,8 @@ export class UserFormComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private userService: UserService, private notificationService: NotificationService,
+    private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.createForm();

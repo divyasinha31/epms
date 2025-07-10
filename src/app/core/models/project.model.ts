@@ -20,6 +20,6 @@ interface Project {
 };
 
 export {
-    ProjectStatus,
-    Project
+  ProjectStatus,
+  Project
 };

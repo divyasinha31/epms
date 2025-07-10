@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
   @Input() currentUser!: User | null;
   @Input() isOpen = true;
   
-  currentRoute = '';
+  currentRoute: string = '';
   
   menuItems: MenuItem[] = [
     {
@@ -43,18 +43,6 @@ export class SidebarComponent implements OnInit {
       label: 'Notifications',
       icon: 'notifications'
     },
-    // {
-    //   path: '/team',
-    //   label: 'Team',
-    //   icon: 'people',
-    //   roles: [UserRole.ADMIN, UserRole.PROJECT_MANAGER]
-    // },
-    // {
-    //   path: '/reports',
-    //   label: 'Reports',
-    //   icon: 'assessment',
-    //   roles: [UserRole.ADMIN, UserRole.PROJECT_MANAGER]
-    // },
     {
       path: '/users',
       label: 'User Management',
@@ -63,7 +51,7 @@ export class SidebarComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.router.events

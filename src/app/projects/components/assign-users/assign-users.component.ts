@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, forkJoin } from 'rxjs';
-
 import { ProjectService } from '../../services/project.service';
-import { Project } from '../../../core/models/project.model';
 import { User } from '../../../core/models/user.model';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -14,20 +12,16 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class AssignUsersComponent implements OnInit, OnDestroy {
   projectId?: string;
-  projectName = '';
+  projectName: string = '';
   availableUsers: User[] = [];
   selectedUsers: User[] = [];
-  searchTerm = '';
-  loading = false;
+  searchTerm: string = '';
+  loading: boolean = false;
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private projectService: ProjectService,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router, private projectService: ProjectService,
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.projectId = this.route.snapshot.paramMap.get('id') || undefined;

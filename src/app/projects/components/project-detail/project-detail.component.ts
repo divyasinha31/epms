@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, forkJoin } from 'rxjs';
-
 import { ProjectService } from '../../services/project.service';
 import { Project, ProjectStatus } from '../../../core/models/project.model';
 import { User } from '../../../core/models/user.model';
@@ -16,16 +15,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   project?: Project;
   teamMembers: User[] = [];
   recentActivities: any[] = [];
-  loading = false;
+  loading: boolean = false;
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private projectService: ProjectService,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router, private projectService: ProjectService,
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.paramMap.get('id');

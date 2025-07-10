@@ -1,27 +1,58 @@
-# Epms
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.1.
+## Enterprize Project Management System
+> Develop a responsive, modular, and scalable Angular-based Enterprise Project Management System (EPMS) that includes:
+- Project and Task management
+- Role-based access control
+- Team and user management
+- Reusable components and services
+- API integration (mock or real)
+- Performance optimizations
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Cloning the application
+To clone the repository, follow these steps:
+1. Install [Git](https://git-scm.com/downloads) (if not already installed).
+2. Copy the **HTTPS URL**, https://github.com/divyasinha31/epms.git.
+3. Open a terminal, navigate to the desired location, and run: `git clone https://github.com/divyasinha31/epms.git`
 
-## Code scaffolding
+---
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Running the application locally
+To run the application locally, follow these steps:
+1. Once cloned, run `npm install` to install the relevant Node packages.
+2. Next, run `npm run dev` to simutaneously run the json server and angular server and navigate to [http://localhost:4200/](http://localhost:4200/).
 
-## Build
+---
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Login with different user roles
+In the current application, we have 3 different roles.
+- Developer
+	- This is the most basic user for the EPMS System
+	- Login creds:
+	Username: dev@epms.com
+	Password: developer123
+- Project Manager
+	- Apart from the developer's access, the project manager also handles the Projects module.
+	- Login creds:
+	Username: pm@epms.com
+	Password: manager123
+- Developer
+	- Apart from the project manager's access, the administrator also handles the Users module.
+	- Login creds:
+	Username: admin@epms.com
+	Password: admin123
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Snaps from the portal
+> For Administrator
+> ![](./src/assets/images/dashboard_admin.png "Dashboard For Admin")
+> For Project Manager
+> ![](./src/assets/images/dashboard_pm.png "Dashboard For PM")
+> For Developer
+> ![](./src/assets/images/dashboard_dev.png "Dashboard For Dev")
+> Users Module For Admin
+> ![](./src/assets/images/user_module.png "Users Module")
+> Projects Module For Admin and Project Manager
+> ![](./src/assets/images/project_module.png "Projects Module")

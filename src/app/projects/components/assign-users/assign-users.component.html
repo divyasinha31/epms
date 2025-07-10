@@ -1,122 +1,120 @@
 <div class="assign-users-container">
-    <!-- Header -->
-    <div class="assign-header">
-        <button mat-icon-button (click)="goBack()" class="back-button">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+  <!-- Header -->
+  <div class="assign-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
 
-        <div class="header-content">
-            <h1>Assign Team Members</h1>
-            <p class="subtitle">Select team members for {{ projectName }}</p>
+    <div class="header-content">
+      <h1>Assign Team Members</h1>
+      <p class="subtitle">Select team members for {{ projectName }}</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="assign-content">
+    <!-- Available Users -->
+    <mat-card class="users-card">
+      <mat-card-header>
+        <mat-card-title>Available Users</mat-card-title>
+        <mat-card-subtitle>{{ availableUsers.length }} users available</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Search -->
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search users</mat-label>
+          <input matInput [(ngModel)]="searchTerm" placeholder="Search by name or email">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- User List -->
+        <div class="users-list">
+          <div class="user-item" *ngFor="let user of getFilteredUsers()" [class.selected]="isUserSelected(user.id)">
+            <mat-checkbox [checked]="isUserSelected(user.id)" (change)="toggleUser(user, $event.checked)"></mat-checkbox>
+
+            <div class="user-avatar">
+              {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+            </div>
+
+            <div class="user-info">
+              <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+              <div class="user-role">{{ user.role | titlecase }}</div>
+              <div class="user-email">{{ user.email }}</div>
+            </div>
+
+            <div class="user-status">
+              <mat-icon *ngIf="user.isActive" class="active-icon">check_circle</mat-icon>
+              <mat-icon *ngIf="!user.isActive" class="inactive-icon">cancel</mat-icon>
+            </div>
+          </div>
         </div>
-    </div>
 
-    <!-- Content -->
-    <div class="assign-content">
-        <!-- Available Users -->
-        <mat-card class="users-card">
-            <mat-card-header>
-                <mat-card-title>Available Users</mat-card-title>
-                <mat-card-subtitle>{{ availableUsers.length }} users available</mat-card-subtitle>
-            </mat-card-header>
+        <!-- No Users -->
+        <div class="no-users" *ngIf="getFilteredUsers().length === 0">
+          <mat-icon>people_outline</mat-icon>
+          <p>No users found</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-            <mat-card-content>
-                <!-- Search -->
-                <mat-form-field appearance="outline" class="search-field">
-                    <mat-label>Search users</mat-label>
-                    <input matInput [(ngModel)]="searchTerm" placeholder="Search by name or email">
-                    <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
+    <!-- Selected Users -->
+    <mat-card class="selected-card">
+      <mat-card-header>
+        <mat-card-title>Selected Team Members</mat-card-title>
+        <mat-card-subtitle>{{ selectedUsers.length }} members selected</mat-card-subtitle>
+      </mat-card-header>
 
-                <!-- User List -->
-                <div class="users-list">
-                    <div class="user-item" *ngFor="let user of getFilteredUsers()" [class.selected]="isUserSelected(user.id)">
-                        <mat-checkbox [checked]="isUserSelected(user.id)" (change)="toggleUser(user, $event.checked)"></mat-checkbox>
-                        
-                        <div class="user-avatar">
-                            {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
-                        </div>
-                        
-                        <div class="user-info">
-                            <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
-                            <div class="user-role">{{ user.role | titlecase }}</div>
-                            <div class="user-email">{{ user.email }}</div>
-                        </div>
-                        
-                        <div class="user-status">
-                            <mat-icon *ngIf="user.isActive" class="active-icon">check_circle</mat-icon>
-                            <mat-icon *ngIf="!user.isActive" class="inactive-icon">cancel</mat-icon>
-                        </div>
-                    </div>
-                </div>
+      <mat-card-content>
+        <div class="selected-list" *ngIf="selectedUsers.length > 0; else noSelection">
+          <div class="selected-item" *ngFor="let user of selectedUsers">
+            <div class="user-avatar">
+              {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+            </div>
+            
+            <div class="user-info">
+              <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+              <div class="user-role">{{ user.role | titlecase }}</div>
+            </div>
+            
+            <button mat-icon-button (click)="removeUser(user)" class="remove-button">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <ng-template #noSelection>
+          <div class="no-selection">
+            <mat-icon>person_add</mat-icon>
+            <p>No team members selected</p>
+            <p class="hint">Select users from the available list</p>
+          </div>
+        </ng-template>
 
-                <!-- No Users -->
-                <div class="no-users" *ngIf="getFilteredUsers().length === 0">
-                    <mat-icon>people_outline</mat-icon>
-                    <p>No users found</p>
-                </div>
-            </mat-card-content>
-        </mat-card>
+        <!-- Quick Actions -->
+        <div class="quick-actions" *ngIf="availableUsers.length > 0">
+          <button mat-stroked-button (click)="selectAll()" [disabled]="allSelected">
+            Select All
+          </button>
 
-        <!-- Selected Users -->
-        <mat-card class="selected-card">
-            <mat-card-header>
-                <mat-card-title>Selected Team Members</mat-card-title>
-                <mat-card-subtitle>{{ selectedUsers.length }} members selected</mat-card-subtitle>
-            </mat-card-header>
+          <button mat-stroked-button (click)="clearSelection()" [disabled]="selectedUsers.length === 0">
+            Clear Selection
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-            <mat-card-content>
-                <div class="selected-list" *ngIf="selectedUsers.length > 0; else noSelection">
-                    <div class="selected-item" *ngFor="let user of selectedUsers">
-                        <div class="user-avatar">
-                            {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
-                        </div>
-                        
-                        <div class="user-info">
-                            <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
-                            <div class="user-role">{{ user.role | titlecase }}</div>
-                        </div>
-                        
-                        <button mat-icon-button (click)="removeUser(user)" class="remove-button">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                
-                <ng-template #noSelection>
-                    <div class="no-selection">
-                        <mat-icon>person_add</mat-icon>
+  <!-- Actions -->
+  <div class="assign-actions">
+    <button mat-button (click)="goBack()" [disabled]="loading">
+      Cancel
+    </button>
 
-                        <p>No team members selected</p>
-
-                        <p class="hint">Select users from the available list</p>
-                    </div>
-                </ng-template>
-
-                <!-- Quick Actions -->
-                <div class="quick-actions" *ngIf="availableUsers.length > 0">
-                    <button mat-stroked-button (click)="selectAll()" [disabled]="allSelected">
-                        Select All
-                    </button>
-
-                    <button mat-stroked-button (click)="clearSelection()" [disabled]="selectedUsers.length === 0">
-                        Clear Selection
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <!-- Actions -->
-    <div class="assign-actions">
-        <button mat-button (click)="goBack()" [disabled]="loading">
-            Cancel
-        </button>
-
-        <button mat-raised-button color="primary" (click)="saveAssignments()" [disabled]="loading || selectedUsers.length === 0">
-            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-            <span *ngIf="!loading">Assign {{ selectedUsers.length }} Member{{ selectedUsers.length === 1 ? '' : 's' }}</span>
-            <span *ngIf="loading">Assigning...</span>
-        </button>
-    </div>
+    <button mat-raised-button color="primary" (click)="saveAssignments()" [disabled]="loading || selectedUsers.length === 0">
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      <span *ngIf="!loading">Assign {{ selectedUsers.length }} Member{{ selectedUsers.length === 1 ? '' : 's' }}</span>
+      <span *ngIf="loading">Assigning...</span>
+    </button>
+  </div>
 </div>

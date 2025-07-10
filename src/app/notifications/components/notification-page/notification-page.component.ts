@@ -14,13 +14,13 @@ import { NotificationService as ToastService } from '../../../core/services/noti
 })
 export class NotificationPageComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
-  totalNotifications = 0;
-  unreadCount = 0;
-  loading = false;
+  totalNotifications: number = 0;
+  unreadCount: number = 0;
+  loading: boolean = false;
   
   // Pagination
-  currentPage = 1;
-  pageSize = 25;
+  currentPage: number = 1;
+  pageSize: number = 25;
   
   // Filters
   filters: NotificationFilters = {};
@@ -31,11 +31,7 @@ export class NotificationPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private filtersChange$ = new Subject<void>();
 
-  constructor(
-    private notificationService: NotificationService,
-    private toastService: ToastService,
-    private router: Router
-  ) {}
+  constructor(private notificationService: NotificationService, private toastService: ToastService, private router: Router) {}
 
   ngOnInit(): void {
     this.setupFiltersDebounce();

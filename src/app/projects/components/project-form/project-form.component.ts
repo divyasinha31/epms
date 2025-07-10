@@ -15,8 +15,8 @@ import { NotificationService } from '../../../core/services/notification.service
 export class ProjectFormComponent implements OnInit, OnDestroy {
   projectForm!: FormGroup;
   dateRangeGroup!: FormGroup;
-  isEditMode = false;
-  loading = false;
+  isEditMode: boolean = false;
+  loading: boolean = false;
   projectId?: string;
 
   availableManagers: User[] = [];
@@ -25,13 +25,8 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private fb: FormBuilder,
-    private projectService: ProjectService,
-    private notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private projectService: ProjectService, private notificationService: NotificationService,
+    private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.createForm();

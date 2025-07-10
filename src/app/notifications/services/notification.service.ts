@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, interval } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../auth/services/auth.service';
-import { 
-  Notification, 
-  NotificationType, 
-  NotificationPriority, 
-  CreateNotificationRequest,
-  NotificationFilters,
-  PaginatedNotifications 
-} from '../models/notification.model';
+import { Notification, NotificationType, NotificationPriority, CreateNotificationRequest,NotificationFilters,PaginatedNotifications } from '../models/notification.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +18,7 @@ export class NotificationService {
   private mockNotifications: Notification[] = [];
   private notificationIdCounter = 1;
 
-  constructor(
-    private apiService: ApiService,
-    private authService: AuthService
-  ) {
+  constructor(private authService: AuthService) {
     this.initializeMockData();
     this.startPeriodicNotificationCheck();
   }

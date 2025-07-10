@@ -15,21 +15,16 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class TaskBoardComponent implements OnInit, OnDestroy {
   projectId?: string;
-  projectName = '';
+  projectName: string = '';
   columns: TaskColumn[] = [];
   availableUsers: User[] = [];
-  loading = false;
+  loading: boolean = false;
   filters: TaskFilters = {};
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private taskService: TaskService,
-    private projectService: ProjectService,
-    private notificationService: NotificationService
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router, private taskService: TaskService,
+    private projectService: ProjectService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
     this.projectId = this.route.snapshot.paramMap.get('projectId') || undefined;

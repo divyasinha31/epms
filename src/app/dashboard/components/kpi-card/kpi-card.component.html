@@ -1,24 +1,24 @@
 <mat-card class="kpi-card" [style.border-left-color]="kpi.color">
-    <mat-card-content>
-        <div class="kpi-header">
-            <div class="kpi-icon" [style.color]="kpi.color">
-                <mat-icon>{{ kpi.icon }}</mat-icon>
-            </div>
+	<mat-card-content>
+		<div class="kpi-header">
+			<div class="kpi-icon" [style.color]="kpi.color">
+				<mat-icon>{{ kpi.icon }}</mat-icon>
+			</div>
 
-            <div class="kpi-trend" *ngIf="kpi.trend">
-                <mat-icon [class.positive]="kpi.trend.isPositive" [class.negative]="!kpi.trend.isPositive">
-                    {{ kpi.trend.isPositive ? 'trending_up' : 'trending_down' }}
-                </mat-icon>
+			<div class="kpi-trend" *ngIf="kpi.trend">
+				<mat-icon [class.positive]="kpi.trend.isPositive" [class.negative]="!kpi.trend.isPositive">
+					{{ kpi.trend.isPositive ? 'trending_up' : 'trending_down' }}
+				</mat-icon>
 
-                <span [class.positive]="kpi.trend.isPositive" [class.negative]="!kpi.trend.isPositive">
-                    {{ kpi.trend.value }}
-                </span>
-            </div>
-        </div>
-        
-        <div class="kpi-content">
-            <h2 class="kpi-value">{{ kpi.value }}</h2>
-            <p class="kpi-title">{{ kpi.title }}</p>
-        </div>
-    </mat-card-content>
+				<span [class.positive]="kpi.trend.isPositive" [class.negative]="!kpi.trend.isPositive">
+					{{ kpi.trend.value }}
+				</span>
+			</div>
+		</div>
+		
+		<div class="kpi-content">
+			<h2 class="kpi-value">{{ kpi.value }}</h2>
+			<p class="kpi-title">{{ kpi.title }}</p>
+		</div>
+	</mat-card-content>
 </mat-card>

@@ -11,17 +11,14 @@ import { AuthService } from './auth/services/auth.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
-  isLoggedIn = false;
-  sidebarOpen = true;
-  isMobile = false;
-  isInitialized = false;
+  isLoggedIn: boolean = false;
+  sidebarOpen: boolean = true;
+  isMobile: boolean  = false;
+  isInitialized: boolean  = false;
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private authService: AuthService, 
-    private router: Router
-  ) {
+  constructor(private authService: AuthService, private router: Router) {
     this.checkMobile();
   }
 

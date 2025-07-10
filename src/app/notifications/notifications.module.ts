@@ -1,5 +1,3 @@
-// src/app/notifications/notifications.module.ts
-
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { NotificationsRoutingModule } from './notifications-routing.module';
 
 // Components
-import { NotificationCenterComponent } from './components/notification-center/notification-center.component';
 import { NotificationPageComponent } from './components/notification-page/notification-page.component';
 
 // Services
@@ -32,7 +29,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
-    NotificationCenterComponent,
     NotificationPageComponent
   ],
   imports: [
@@ -57,8 +53,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     NotificationService,
     NotificationIntegrationService
   ],
-  exports: [
-    NotificationCenterComponent
-  ]
+  exports: []
 })
 export class NotificationsModule { }

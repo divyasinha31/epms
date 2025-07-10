@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../../core/services/api.service';
 import { Task, TaskStatus, TaskPriority } from '../../core/models/task.model';
 import { User } from '../../core/models/user.model';

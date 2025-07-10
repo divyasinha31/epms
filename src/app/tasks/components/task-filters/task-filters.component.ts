@@ -23,7 +23,7 @@ export class TaskFiltersComponent implements OnInit {
   quickFilter: string | null = null;
   currentUserId?: string;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.authService.currentUser.subscribe(user => {

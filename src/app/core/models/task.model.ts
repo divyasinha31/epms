@@ -28,7 +28,7 @@ interface Task {
 };
 
 export {
-    TaskStatus,
-    TaskPriority,
-    Task
+  TaskStatus,
+  TaskPriority,
+  Task
 };

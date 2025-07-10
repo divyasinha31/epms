@@ -1,201 +1,198 @@
 <div class="project-list-container">
-    <!-- Header -->
-    <div class="list-header">
-        <div class="header-content">
-            <h1>Projects</h1>
+	<!-- Header -->
+	<div class="list-header">
+		<div class="header-content">
+			<h1>Projects</h1>
 
-            <p class="subtitle">Manage and track all your projects</p>
-        </div>
+			<p class="subtitle">Manage and track all your projects</p>
+		</div>
 
-        <div class="header-actions">
-            <button mat-raised-button color="primary" (click)="createProject()">
-                <mat-icon>add</mat-icon>
-                New Project
-            </button>
-        </div>
-    </div>
+		<div class="header-actions">
+			<button mat-raised-button color="primary" (click)="createProject()">
+				<mat-icon>add</mat-icon>
+				New Project
+			</button>
+		</div>
+	</div>
 
-    <!-- Filters -->
-    <mat-card class="filters-card">
-        <mat-card-content>
-            <div class="filters-grid">
-                <!-- Search -->
-                <mat-form-field appearance="outline" class="search-field">
-                    <mat-label>Search projects</mat-label>
-                    <input matInput [(ngModel)]="filters.search" (input)="onFiltersChange()" placeholder="Search by name or description">
-                    <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
+	<!-- Filters -->
+	<mat-card class="filters-card">
+		<mat-card-content>
+			<div class="filters-grid">
+				<!-- Search -->
+				<mat-form-field appearance="outline" class="search-field">
+					<mat-label>Search projects</mat-label>
+					<input matInput [(ngModel)]="filters.search" (input)="onFiltersChange()" placeholder="Search by name or description">
+					<mat-icon matPrefix>search</mat-icon>
+				</mat-form-field>
 
-                <!-- Status Filter -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Status</mat-label>
+				<!-- Status Filter -->
+				<mat-form-field appearance="outline">
+					<mat-label>Status</mat-label>
 
-                    <mat-select [(value)]="filters.status" (selectionChange)="onFiltersChange()">
-                        <mat-option value="">All Status</mat-option>
-                        <mat-option value="planning">Planning</mat-option>
-                        <mat-option value="in_progress">In Progress</mat-option>
-                        <mat-option value="on_hold">On Hold</mat-option>
-                        <mat-option value="completed">Completed</mat-option>
-                        <mat-option value="cancelled">Cancelled</mat-option>
-                    </mat-select>
-                </mat-form-field>
+					<mat-select [(value)]="filters.status" (selectionChange)="onFiltersChange()">
+						<mat-option value="">All Status</mat-option>
+						<mat-option value="planning">Planning</mat-option>
+						<mat-option value="in_progress">In Progress</mat-option>
+						<mat-option value="on_hold">On Hold</mat-option>
+						<mat-option value="completed">Completed</mat-option>
+						<mat-option value="cancelled">Cancelled</mat-option>
+					</mat-select>
+				</mat-form-field>
 
-                <!-- Date Range -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Start Date From</mat-label>
-                    <input matInput [matDatepicker]="startPicker"  [(ngModel)]="filters.startDate" (dateChange)="onFiltersChange()">
-                    <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #startPicker></mat-datepicker>
-                </mat-form-field>
+				<!-- Date Range -->
+				<mat-form-field appearance="outline">
+					<mat-label>Start Date From</mat-label>
+					<input matInput [matDatepicker]="startPicker" [(ngModel)]="filters.startDate" (dateChange)="onFiltersChange()">
+					<mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+					<mat-datepicker #startPicker></mat-datepicker>
+				</mat-form-field>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>End Date To</mat-label>
-                    <input matInput [matDatepicker]="endPicker" [(ngModel)]="filters.endDate" (dateChange)="onFiltersChange()">
-                    <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #endPicker></mat-datepicker>
-                </mat-form-field>
+				<mat-form-field appearance="outline">
+					<mat-label>End Date To</mat-label>
+					<input matInput [matDatepicker]="endPicker" [(ngModel)]="filters.endDate" (dateChange)="onFiltersChange()">
+					<mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+					<mat-datepicker #endPicker></mat-datepicker>
+				</mat-form-field>
 
-                <!-- Clear Filters -->
-                <button mat-stroked-button (click)="clearFilters()" class="clear-filters-btn">
-                    <mat-icon>clear</mat-icon>
-                    Clear Filters
-                </button>
-            </div>
-        </mat-card-content>
-    </mat-card>
+				<!-- Clear Filters -->
+				<button mat-stroked-button (click)="clearFilters()" class="clear-filters-btn">
+					<mat-icon>clear</mat-icon>
+					Clear Filters
+				</button>
+			</div>
+		</mat-card-content>
+	</mat-card>
 
-    <!-- Projects Table -->
-    <mat-card class="table-card">
-        <mat-card-content>
-            <!-- Loading -->
-            <div class="loading-container" *ngIf="loading">
-                <mat-spinner diameter="40"></mat-spinner>
-                <p>Loading projects...</p>
-            </div>
+	<!-- Projects Table -->
+	<mat-card class="table-card">
+		<mat-card-content>
+			<!-- Loading -->
+			<div class="loading-container" *ngIf="loading">
+				<mat-spinner diameter="40"></mat-spinner>
+				<p>Loading projects...</p>
+			</div>
 
-            <!-- Projects Table -->
-            <div class="table-container" *ngIf="!loading">
-                <table mat-table [dataSource]="projects" class="projects-table" matSort (matSortChange)="onSortChange($event)">
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+			<!-- Projects Table -->
+			<div class="table-container" *ngIf="!loading">
+				<table mat-table [dataSource]="projects" class="projects-table" matSort (matSortChange)="onSortChange($event)">
+					<!-- Name Column -->
+					<ng-container matColumnDef="name">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
 
-                        <td mat-cell *matCellDef="let project">
-                            <div class="project-name-cell">
-                                <strong>{{ project.name }}</strong>
-                                <p class="project-description">{{ project.description | slice:0:100 }}...</p>
-                            </div>
-                        </td>
-                    </ng-container>
+						<td mat-cell *matCellDef="let project">
+							<div class="project-name-cell">
+								<strong>{{ project.name }}</strong>
+								<p class="project-description">{{ project.description | slice:0:100 }}...</p>
+							</div>
+						</td>
+					</ng-container>
 
-                    <!-- Status Column -->
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+					<!-- Status Column -->
+					<ng-container matColumnDef="status">
+						<th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
 
-                        <td mat-cell *matCellDef="let project">
-                            <span class="status-chip" [class]="'status-' + project.status">
-                                {{ getStatusDisplayName(project.status) }}
-                            </span>
-                        </td>
-                    </ng-container>
+						<td mat-cell *matCellDef="let project">
+							<span class="status-chip" [class]="'status-' + project.status">
+								{{ getStatusDisplayName(project.status) }}
+							</span>
+						</td>
+					</ng-container>
 
-                    <!-- Dates Column -->
-                    <ng-container matColumnDef="dates">
-                        <th mat-header-cell *matHeaderCellDef>Timeline</th>
-                        <td mat-cell *matCellDef="let project">
-                            <div class="dates-cell">
-                                <span class="date-range">
-                                    {{ project.startDate | date:'MMM dd' }} - {{ project.endDate | date:'MMM dd, yyyy' }}
-                                </span>
+					<!-- Dates Column -->
+					<ng-container matColumnDef="dates">
+						<th mat-header-cell *matHeaderCellDef>Timeline</th>
 
-                                <div class="progress-bar">
-                                    <div class="progress-fill" [style.width.%]="getProjectProgress(project)"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </ng-container>
+						<td mat-cell *matCellDef="let project">
+							<div class="dates-cell">
+								<span class="date-range">
+									{{ project.startDate | date:'MMM dd' }} - {{ project.endDate | date:'MMM dd, yyyy' }}
+								</span>
 
-                    <!-- Team Column -->
-                    <ng-container matColumnDef="team">
-                        <th mat-header-cell *matHeaderCellDef>Team</th>
+								<div class="progress-bar">
+									<div class="progress-fill" [style.width.%]="getProjectProgress(project)"></div>
+								</div>
+							</div>
+						</td>
+					</ng-container>
 
-                        <td mat-cell *matCellDef="let project">
-                            <div class="team-avatars">
-                                <div class="avatar-count" *ngIf="project.teamMembers.length > 0">
-                                    {{ project.teamMembers.length }}
-                                    <mat-icon>people</mat-icon>
-                                </div>
+					<!-- Team Column -->
+					<ng-container matColumnDef="team">
+						<th mat-header-cell *matHeaderCellDef>Team</th>
 
-                                <span *ngIf="project.teamMembers.length === 0" class="no-team">No team assigned</span>
-                            </div>
-                        </td>
-                    </ng-container>
+						<td mat-cell *matCellDef="let project">
+							<div class="team-avatars">
+								<div class="avatar-count" *ngIf="project.teamMembers.length > 0">
+									{{ project.teamMembers.length }}
+									<mat-icon>people</mat-icon>
+								</div>
 
-                    <!-- Actions Column -->
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+								<span *ngIf="project.teamMembers.length === 0" class="no-team">No team assigned</span>
+							</div>
+						</td>
+					</ng-container>
 
-                        <td mat-cell *matCellDef="let project">
-                            <div class="actions-cell">
-                                <button mat-icon-button [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{project: project}">
-                                <mat-icon>more_vert</mat-icon>
-                                </button>
-                            </div>
-                        </td>
-                    </ng-container>
+					<!-- Actions Column -->
+					<ng-container matColumnDef="actions">
+						<th mat-header-cell *matHeaderCellDef>Actions</th>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<td mat-cell *matCellDef="let project">
+							<div class="actions-cell">
+								<button mat-icon-button [matMenuTriggerFor]="actionMenu" [matMenuTriggerData]="{project: project}">
+								<mat-icon>more_vert</mat-icon>
+								</button>
+							</div>
+						</td>
+					</ng-container>
 
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-                        class="project-row" 
-                        (click)="viewProject(row.id)">
-                    </tr>
-                </table>
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-                <!-- No Data -->
-                <div class="no-data" *ngIf="projects.length === 0">
-                <mat-icon>work_off</mat-icon>
-                <h3>No projects found</h3>
-                <p>Try adjusting your filters or create a new project</p>
-                <button mat-raised-button color="primary" (click)="createProject()">
-                    Create Project
-                </button>
-                </div>
-            </div>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;" class="project-row" (click)="viewProject(row.id)"></tr>
+				</table>
 
-            <!-- Pagination -->
-            <mat-paginator 
-                *ngIf="!loading && projects.length > 0"
-                [length]="totalProjects"
-                [pageSize]="pageSize"
-                [pageSizeOptions]="[5, 10, 25, 50]"
-                [pageIndex]="currentPage - 1"
-                (page)="onPageChange($event)"
-                showFirstLastButtons>
-            </mat-paginator>
-        </mat-card-content>
-    </mat-card>
-    </div>
+				<!-- No Data -->
+				<div class="no-data" *ngIf="projects.length === 0">
+					<mat-icon>work_off</mat-icon>
+					<h3>No projects found</h3>
+					<p>Try adjusting your filters or create a new project</p>
 
-    <!-- Action Menu -->
-    <mat-menu #actionMenu="matMenu">
-    <ng-template matMenuContent let-project="project">
-        <button mat-menu-item (click)="viewProject(project.id)">
-        <mat-icon>visibility</mat-icon>
-        View Details
-        </button>
-        <button mat-menu-item (click)="editProject(project.id)">
-        <mat-icon>edit</mat-icon>
-        Edit Project
-        </button>
-        <button mat-menu-item (click)="assignUsers(project.id)">
-        <mat-icon>people</mat-icon>
-        Assign Users
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="deleteProject(project.id)" class="delete-action">
-        <mat-icon>delete</mat-icon>
-        Delete Project
-        </button>
-    </ng-template>
+					<button mat-raised-button color="primary" (click)="createProject()">
+						Create Project
+					</button>
+				</div>
+			</div>
+
+			<!-- Pagination -->
+			<mat-paginator *ngIf="!loading && projects.length > 0" [length]="totalProjects" [pageSize]="pageSize"
+				[pageSizeOptions]="[5, 10, 25, 50]" [pageIndex]="currentPage - 1" (page)="onPageChange($event)" showFirstLastButtons>
+			</mat-paginator>
+		</mat-card-content>
+	</mat-card>
+</div>
+
+<!-- Action Menu -->
+<mat-menu #actionMenu="matMenu">
+	<ng-template matMenuContent let-project="project">
+		<button mat-menu-item (click)="viewProject(project.id)">
+			<mat-icon>visibility</mat-icon>
+			View Details
+		</button>
+
+		<button mat-menu-item (click)="editProject(project.id)">
+			<mat-icon>edit</mat-icon>
+			Edit Project
+		</button>
+
+		<button mat-menu-item (click)="assignUsers(project.id)">
+			<mat-icon>people</mat-icon>
+			Assign Users
+		</button>
+
+		<mat-divider></mat-divider>
+
+		<button mat-menu-item (click)="deleteProject(project.id)" class="delete-action">
+			<mat-icon>delete</mat-icon>
+			Delete Project
+		</button>
+	</ng-template>
 </mat-menu>

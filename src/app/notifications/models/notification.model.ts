@@ -71,11 +71,11 @@ interface PaginatedNotifications {
 }
 
 export {
-    NotificationType,
-    NotificationPriority,
-    Notification,
-    NotificationPreferences,
-    CreateNotificationRequest,
-    NotificationFilters,
-    PaginatedNotifications
+  NotificationType,
+  NotificationPriority,
+  Notification,
+  NotificationPreferences,
+  CreateNotificationRequest,
+  NotificationFilters,
+  PaginatedNotifications
 };

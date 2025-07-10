@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, forkJoin } from 'rxjs';
-
+import { Subject, takeUntil } from 'rxjs';
 import { TaskService, CreateTaskRequest, UpdateTaskRequest } from '../../services/task.service';
 import { Task, TaskStatus, TaskPriority } from '../../../core/models/task.model';
 import { User } from '../../../core/models/user.model';
@@ -15,8 +14,8 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
   taskForm!: FormGroup;
-  isEditMode = false;
-  loading = false;
+  isEditMode: boolean = false;
+  loading: boolean = false;
   projectId?: string;
   taskId?: string;
 
@@ -24,13 +23,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private fb: FormBuilder,
-    private taskService: TaskService,
-    private notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private taskService: TaskService, private notificationService: NotificationService,
+    private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.createForm();

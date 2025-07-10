@@ -10,7 +10,6 @@ import { User } from '../../../core/models/user.model';
 export class TaskCardComponent {
   @Input() task!: Task;
   @Input() assignee?: User;
-
   @Output() taskClick = new EventEmitter<void>();
   @Output() statusChange = new EventEmitter<TaskStatus>();
   @Output() deleteTask = new EventEmitter<void>();

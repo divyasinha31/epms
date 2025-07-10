@@ -13,10 +13,7 @@ import { User } from '../../core/models/user.model';
 })
 export class NotificationIntegrationService {
 
-  constructor(
-    private notificationService: NotificationService,
-    private authService: AuthService
-  ) {}
+  constructor(private notificationService: NotificationService, private authService: AuthService) {}
 
   // Task-related notifications
   notifyTaskAssigned(task: Task, assignee: User): Observable<any> {

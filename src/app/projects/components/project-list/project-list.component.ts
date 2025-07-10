@@ -2,10 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-
 import { ProjectService, ProjectFilters } from '../../services/project.service';
 import { Project, ProjectStatus } from '../../../core/models/project.model';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -20,9 +18,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   loading = false;
   
   // Pagination
-  currentPage = 1;
-  pageSize = 10;
-  totalProjects = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalProjects: number = 0;
 
   // Filters
   filters: ProjectFilters = {
@@ -38,12 +36,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private filtersChange$ = new Subject<void>();
 
-  constructor(
-    private projectService: ProjectService,
-    private notificationService: NotificationService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  constructor(private projectService: ProjectService, private notificationService: NotificationService,
+    private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.setupFiltersDebounce();

@@ -6,30 +6,12 @@ import { ProjectDetailComponent } from './components/project-detail/project-deta
 import { AssignUsersComponent } from './components/assign-users/assign-users.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: ProjectListComponent
-  },
-  {
-    path: 'new',
-    component: ProjectFormComponent
-  },
-  {
-    path: ':id',
-    component: ProjectDetailComponent
-  },
-  {
-    path: ':id/edit',
-    component: ProjectFormComponent
-  },
-  {
-    path: ':id/assign-users',
-    component: AssignUsersComponent
-  },
-  {
-    path: ':projectId/tasks',
-    loadChildren: () => import('../tasks/tasks.module').then(m => m.TasksModule)
-  }
+  { path: '', component: ProjectListComponent },
+  { path: 'new', component: ProjectFormComponent },
+  { path: ':id', component: ProjectDetailComponent },
+  { path: ':id/edit', component: ProjectFormComponent },
+  { path: ':id/assign-users', component: AssignUsersComponent },
+  { path: ':projectId/tasks', loadChildren: () => import('../tasks/tasks.module').then(m => m.TasksModule) }
 ];
 
 @NgModule({

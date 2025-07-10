@@ -1,34 +1,32 @@
 <nav class="sidebar" [class.closed]="!isOpen">
-    <div class="sidebar-content">
-        <!-- User info section -->
-        <div class="user-section" *ngIf="isOpen">
-            <div class="user-card">
-                <div class="user-avatar">
-                    {{ currentUser?.firstName?.charAt(0) }}{{ currentUser?.lastName?.charAt(0) }}
-                </div>
+	<div class="sidebar-content">
+		<!-- User info section -->
+		<div class="user-section" *ngIf="isOpen">
+			<div class="user-card">
+				<div class="user-avatar">
+					{{ currentUser?.firstName?.charAt(0) }}{{ currentUser?.lastName?.charAt(0) }}
+				</div>
 
-                <div class="user-info">
-                    <div class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+				<div class="user-info">
+					<div class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+					<div class="user-role">{{ getUserRoleDisplayName() }}</div>
+				</div>
+			</div>
+		</div>
 
-                    <div class="user-role">{{ getUserRoleDisplayName() }}</div>
-                </div>
-            </div>
-        </div>
+		<mat-divider *ngIf="isOpen"></mat-divider>
 
-        <mat-divider *ngIf="isOpen"></mat-divider>
+		<!-- Navigation menu -->
+		<mat-nav-list class="nav-list">
+			<ng-container *ngFor="let item of menuItems">
+				<mat-list-item *ngIf="hasPermission(item)" [class.active]="isActiveRoute(item.path)" (click)="navigate(item.path)" class="nav-item">
+					<mat-icon matListIcon>{{ item.icon }}</mat-icon>
 
-        <!-- Navigation menu -->
-        <mat-nav-list class="nav-list">
-            <ng-container *ngFor="let item of menuItems">
-                <mat-list-item *ngIf="hasPermission(item)" [class.active]="isActiveRoute(item.path)" (click)="navigate(item.path)" 
-                    class="nav-item">
-                    <mat-icon matListIcon>{{ item.icon }}</mat-icon>
+					<span matLine *ngIf="isOpen">{{ item.label }}</span>
 
-                    <span matLine *ngIf="isOpen">{{ item.label }}</span>
-
-                    <div class="nav-tooltip" *ngIf="!isOpen">{{ item.label }}</div>
-                </mat-list-item>
-            </ng-container>
-        </mat-nav-list>
-    </div>
+					<div class="nav-tooltip" *ngIf="!isOpen">{{ item.label }}</div>
+				</mat-list-item>
+			</ng-container>
+		</mat-nav-list>
+	</div>
 </nav>

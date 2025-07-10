@@ -1,20 +1,20 @@
 <div class="app-layout">
-    <!-- Header -->
-    <app-header [currentUser]="currentUser" (toggleSidebar)="onToggleSidebar()"></app-header>
+	<!-- Header -->
+	<app-header [currentUser]="currentUser" (toggleSidebar)="onToggleSidebar()"></app-header>
 
-    <!-- Main container -->
-    <div class="layout-container">
-        <!-- Sidebar -->
-        <div class="sidebar-wrapper" [class.closed]="!sidebarOpen" [class.mobile]="isMobile">
-            <app-sidebar [currentUser]="currentUser" [isOpen]="sidebarOpen"></app-sidebar>
-        </div>
+	<!-- Main container -->
+	<div class="layout-container">
+		<!-- Sidebar -->
+		<div class="sidebar-wrapper" [class.closed]="!sidebarOpen" [class.mobile]="isMobile">
+			<app-sidebar [currentUser]="currentUser" [isOpen]="sidebarOpen"></app-sidebar>
+		</div>
 
-        <!-- Main content -->
-        <main class="main-content" [class.sidebar-closed]="!sidebarOpen">
-            <router-outlet></router-outlet>
-        </main>
+		<!-- Main content -->
+		<main class="main-content" [class.sidebar-closed]="!sidebarOpen">
+			<router-outlet></router-outlet>
+		</main>
 
-        <!-- Mobile backdrop -->
-        <div class="mobile-backdrop" *ngIf="isMobile && sidebarOpen" (click)="closeSidebar()"></div>
-    </div>
+		<!-- Mobile backdrop -->
+		<div class="mobile-backdrop" *ngIf="isMobile && sidebarOpen" (click)="closeSidebar()"></div>
+	</div>
 </div>

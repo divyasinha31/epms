@@ -27,8 +27,8 @@ interface LoginResponse {
 };
 
 export {
-    UserRole,
-    User,
-    LoginRequest,
-    LoginResponse
+  UserRole,
+  User,
+  LoginRequest,
+  LoginResponse
 };

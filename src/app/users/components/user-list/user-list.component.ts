@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-
 import { UserService, UserFilters } from '../../services/user.service';
 import { User, UserRole } from '../../../core/models/user.model';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -15,12 +14,12 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class UserListComponent implements OnInit, OnDestroy {
   users: User[] = [];
-  loading = false;
+  loading: boolean = false;
   
   // Pagination
-  currentPage = 1;
-  pageSize = 10;
-  totalUsers = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalUsers: number = 0;
 
   // Filters
   filters: UserFilters = {
@@ -38,11 +37,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private filtersChange$ = new Subject<void>();
 
-  constructor(
-    private userService: UserService,
-    private notificationService: NotificationService,
-    private router: Router
-  ) {}
+  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router) { }
 
   ngOnInit(): void {
     this.setupFiltersDebounce();

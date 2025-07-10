@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { Subject, takeUntil, forkJoin } from 'rxjs';
-
 import { DashboardService, DashboardKPI } from '../../services/dashboard.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { User } from '../../../core/models/user.model';
@@ -20,16 +19,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   currentUser: User | null = null;
   kpis: DashboardKPI[] = [];
   activities: any[] = [];
-  loading = true;
+  loading: boolean = true;
 
   private projectStatusChart?: Chart;
   private taskProgressChart?: Chart;
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private dashboardService: DashboardService,
-    private authService: AuthService
-  ) {}
+  constructor(private dashboardService: DashboardService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.authService.currentUser
