@@ -30,18 +30,18 @@ In the current application, we have 3 different roles.
 - Developer
 	- This is the most basic user for the EPMS System
 	- Login creds:
-	Username: dev@epms.com
-	Password: developer123
+		- Username: dev@epms.com
+		- Password: developer123
 - Project Manager
 	- Apart from the developer's access, the project manager also handles the Projects module.
 	- Login creds:
-	Username: pm@epms.com
-	Password: manager123
+		- Username: pm@epms.com
+		- Password: manager123
 - Developer
 	- Apart from the project manager's access, the administrator also handles the Users module.
 	- Login creds:
-	Username: admin@epms.com
-	Password: admin123
+		- Username: admin@epms.com
+		- Password: admin123
 
 ---
 
